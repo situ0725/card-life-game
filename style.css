@@ -13,14 +13,14 @@ body {
 }
 
 .status {
-    display: flex;
-    align-items: center;
-    gap: 25px;   /* 各項目の間隔 */
-    flex-wrap: nowrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 40px;
     background: #1f1f2d;
     padding: 20px;
     border-radius: 15px;
     margin-bottom: 20px;
+    text-align: left;
 }
 
 .status p {
