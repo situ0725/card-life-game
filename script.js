@@ -31,7 +31,7 @@ const cardList15 = [
         icon: "📖",
         text: "テスト勉強の成果が出た。",
         effect: () => {
-            study += 10;
+            study += 6;
         }
     },
 
@@ -50,27 +50,18 @@ const cardList15 = [
         icon: "😴",
         text: "授業をサボってしまった。",
         effect: () => {
-            study -= 8;
+            study -= 6;
             mental += 2;
         }
     },
 
-    {
-        name: "テスト勉強",
-        icon: "✏️",
-        text: "テストに向けて一生懸命勉強した。",
-        effect: () => {
-            study += 5;
-            mental -= 3;
-        }
-    },
 
     {
         name: "友達と勉強した",
         icon: "👨‍🏫",
         text: "友達と一緒に勉強して理解が深まった。",
         effect: () => {
-            study += 6;
+            study += 4;
             mental += 3;
             luck += 2;
         }
@@ -105,7 +96,7 @@ const cardList15 = [
         text: "風邪をひいてしまった。",
         effect: () => {
             health -= 10;
-            study -= 4;
+            study -= 3;
         }
     },
 
@@ -127,6 +118,7 @@ const cardList15 = [
         text: "お小遣いをもらった。",
         effect: () => {
             money += 1000;
+            study -= 1;
         }
     },
 
