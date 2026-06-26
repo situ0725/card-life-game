@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>運命のカード</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="game">
+
+        <h1>運命のカード</h1>
+
+        <div class="status">
+
+            <p>年齢：<span id="age">15</span>歳</p>
+
+            <p>
+                日付：
+                <span id="year">2026</span>年
+                <span id="month">4</span>月
+            </p>
+
+            <p id="studyStatus">
+                学力：<span id="study">50</span>
+            </p>
+
+            <p>健康：<span id="health">50</span></p>
+
+            <p>精神：<span id="mental">50</span></p>
+
+            <p>お金：<span id="money">1000</span>円</p>
+
+            <p>幸運：<span id="luck">50</span></p>
+
+        </div>
+
+        <p id="message">
+            裏向きのカードを1枚選んでください。
+        </p>
+
+        <div id="cards" class="cards"></div>
+
+        <button id="nextButton" onclick="nextTurn()" disabled>
+            次を引く
+        </button>
+
+    </main>
+
+    <div id="gameOverModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>ゲームオーバー</h2>
+            <p id="gameOverText">人生が限界を迎えました。</p>
+            <button onclick="restartGame()">最初からやり直す</button>
+        </div>
+    </div>
+
+    <div id="dropoutModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>退学</h2>
+            <p>学力が0になり、大学を退学しました。</p>
+
+            <button onclick="closeDropoutModal()">閉じる</button>
+        </div>
+    </div>
+
+    <div id="moneyModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>お金が足りません</h2>
+            <p id="moneyModalText">お金が足りず諦めた。</p>
+            <button onclick="closeMoneyModal()">閉じる</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
