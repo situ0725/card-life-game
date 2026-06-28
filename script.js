@@ -130,6 +130,7 @@ const cardList15 = [
         text: "今日はいいことがあった。",
         effect: () => {
             luck += 10;
+            study += 2;
         }
     },
 
