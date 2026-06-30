@@ -845,6 +845,8 @@ const cardListJobHunting = [
 
 ];
 
+//　-----会社員カード======
+
 const cardListCompany = [
     {
         name: "仕事を頑張った",
@@ -883,7 +885,20 @@ const cardListCompany = [
             mental -= 5;
             health -= 3;
         }
-    }
+    },
+
+    {
+        name: "転職活動",
+        icon: "🔄",
+        text: "より良い会社を目指して転職活動を始めた。",
+        effect: () => {
+            isJobHunting = true;
+            isChangingJob = true;
+            interviewStage = 0;
+            nextCardCount = 2;
+            mental -= 3;
+        }
+    },
 ];
 
 function getUniversityCard() {
