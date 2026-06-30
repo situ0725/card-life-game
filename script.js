@@ -31,6 +31,10 @@ let contribution = 50;    // 貢献度
 let position = "一般社員"; // 役職
 let salary = 0;           // 毎ターンの給料
 
+let interviewStage = 0;        // 面接段階
+let pendingJobOffer = "";      // 内定候補
+let isChangingJob = false;     // 転職活動中か
+
 const maxJobHuntingTurn = 3;
 
 
@@ -800,7 +804,8 @@ const cardListDroppedOut = [
         minMental: 30,
         effect: () => {
             isJobHunting = true;
-            jobHuntingTurn = 0;
+            interviewStage = 0;
+            nextCardCount = 2;
         }
     }
 ];
@@ -808,24 +813,33 @@ const cardListDroppedOut = [
 const cardListJobHunting = [
 
     {
-        name: "頑張る",
-        icon: "💪",
-        text: "就職活動を頑張った。",
+        name: "面接成功",
+        icon: "✅",
+        text: "面接で好印象を残せた。",
         effect: () => {
-            luck += 10;
-            mental -= 5;
-            jobHuntingTurn++;
+            interviewStage++;
+
+            if (interviewStage === 1) {
+                this.text = "一次面接に成功した。";
+            } else if (interviewStage === 2) {
+                this.text = "二次面接に成功した。";
+            } else if (interviewStage >= 3) {
+                this.text = "最終面接に成功した。内定が出た。";
+                createJobOffer();
+            }
+
+            mental -= 3;
+            luck += 3;
         }
     },
 
     {
-        name: "サボる",
-        icon: "😴",
-        text: "就職活動をサボってしまった。",
+        name: "面接失敗",
+        icon: "❌",
+        text: "面接でうまく話せなかった。",
         effect: () => {
-            luck -= 10;
-            mental += 3;
-            jobHuntingTurn++;
+            mental -= 5;
+            luck -= 5;
         }
     }
 
@@ -1503,6 +1517,94 @@ function closeLoadModal() {
         .classList.add("hidden");
 
 }
+
+function createJobOffer() {
+
+    isJobHunting = false;
+    interviewStage = 0;
+
+    if (!isWorking) {
+        pendingJobOffer = "small";
+    } else if (jobType === "small") {
+        const offers = ["small", "middle"];
+        pendingJobOffer = offers[Math.floor(Math.random() * offers.length)];
+    } else if (jobType === "middle") {
+        const offers = ["small", "middle", "big"];
+        pendingJobOffer = offers[Math.floor(Math.random() * offers.length)];
+    } else {
+        const offers = ["middle", "big"];
+        pendingJobOffer = offers[Math.floor(Math.random() * offers.length)];
+    }
+
+    showJobOfferModal();
+}
+
+function showJobOfferModal() {
+
+    let companyName = "";
+
+    if (pendingJobOffer === "small") companyName = "小さい会社";
+    if (pendingJobOffer === "middle") companyName = "中堅企業";
+    if (pendingJobOffer === "big") companyName = "大企業";
+
+    document.getElementById("jobOfferText").textContent =
+        `${companyName}から内定が出ました。就職しますか？`;
+
+    document.getElementById("jobOfferModal").classList.remove("hidden");
+}
+
+function acceptJobOffer() {
+
+    document.getElementById("jobOfferModal").classList.add("hidden");
+
+    if (pendingJobOffer === "small") {
+        jobType = "small";
+        salary = 180000;
+    }
+
+    if (pendingJobOffer === "middle") {
+        jobType = "middle";
+        salary = 250000;
+    }
+
+    if (pendingJobOffer === "big") {
+        jobType = "big";
+        salary = 350000;
+    }
+
+    isWorking = true;
+    isChangingJob = false;
+    position = "一般社員";
+    contribution = 50;
+    pendingJobOffer = "";
+
+    updateStatus();
+
+    document.getElementById("message").textContent =
+        "就職が決まり、新しい生活が始まりました。";
+
+    document.getElementById("nextButton").disabled = false;
+}
+
+function declineJobOffer() {
+
+    document.getElementById("jobOfferModal").classList.add("hidden");
+
+    pendingJobOffer = "";
+    isChangingJob = false;
+
+    mental -= 3;
+    luck -= 2;
+
+    updateStatus();
+
+    document.getElementById("message").textContent =
+        "内定を辞退しました。次の機会を待ちます。";
+
+    document.getElementById("nextButton").disabled = false;
+}
+
+
 
 function playTitleBgm() {
     const titleBgm = document.getElementById("titleBgm");

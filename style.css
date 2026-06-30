@@ -570,3 +570,33 @@ button {
     font-size: 28px;
     line-height: 1.8;
 }
+
+#moneyModalText {
+    font-size: 38px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.5;
+    margin: 0;
+    transform: translateY(60px);
+}
+
+#moneyCloseButton {
+    transform: translateY(-20px);
+}
+
+#dropoutText {
+    font-size: 34px;      /* 32～40pxで好みに調整 */
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.6;
+    transform: translateY(20px);
+}
+
+
+
+#dropoutCloseButton {
+    font-size: 24px;      /* 文字を大きく */
+    width: 700px;         /* ボタンを横に大きく */
+    height: 180px;         /* ボタンを縦に大きく */
+    transform: translateY(110px); /* 下へ移動 */
+}
