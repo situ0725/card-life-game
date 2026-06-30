@@ -7,27 +7,47 @@ body {
 }
 
 .game {
-  max-width: 700px;
+  max-width: 950px;
   margin: 0 auto;
   padding: 24px;
 }
 
-.status {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px 40px;
-    background: #1f1f2d;
-    padding: 20px;
-    border-radius: 15px;
-    margin-bottom: 20px;
+.status{
+    width: 760px;
+    height: 340px;
+    max-width: 100%;
+
+    margin: 0 auto -50px;
+
+    background: url("images/panel-status.png") center/100% 100% no-repeat;
+
+    padding: 85px 110px;
+    box-sizing: border-box;
+
+    border: none;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
     text-align: left;
 }
 
-.status p {
+.status-left,
+.status-right{
+    width: 42%;
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.status p{
     margin: 0;
-    white-space: nowrap;
-    font-size: 22px;
+    color: #f5f1e6;
+    font-size: 20px;
     font-weight: bold;
+    white-space: nowrap;
 }
 
 .cards {
@@ -56,9 +76,16 @@ body {
 }
 
 .card.back {
-  background: linear-gradient(135deg, #111827, #4b5563);
-}
+    background: url("images/card-back.png") center center;
+    background-size: cover;
+    background-repeat: no-repeat;
 
+    border: none;
+    border-radius: 14px;
+
+    color: transparent;
+    font-size: 0;
+}
 .card.open {
   background: white;
   color: #111827;
@@ -94,18 +121,452 @@ button {
 }
 
 .modal-content {
-    background: white;
-    color: #111827;
-    padding: 30px;
-    border-radius: 16px;
+    width: 900px;
+    height: 650px;
+
+    background: url("images/panel-howto.png") center center;
+    background-size: contain;
+    background-repeat: no-repeat;
+
+    background-color: transparent;
+
+    border: none;
+
+    padding: 90px 100px;
+    box-sizing: border-box;
+
+    color: #fff5d6;
     text-align: center;
-    width: 300px;
+}
+
+.modal-content h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 34px;
+    color: #fff5d6;
 }
 
 .modal-content button {
-    margin-top: 16px;
-    padding: 12px 20px;
+    display: block;
+    margin: -50px auto 0;
+}
+
+/* タイトル画面 */
+#titleScreen {
+    width: 100%;
+    height: 100vh;
+
+    background-image: url("images/title-bg.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    color: white;
+}
+
+/* 背景を少し暗くして文字を見やすくする */
+#titleScreen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+}
+
+#titleScreen h1,
+#titleScreen p,
+#titleScreen button {
+    position: relative;
+    z-index: 1;
+}
+
+#titleLogo {
+    width: 650px;
+    max-width: 90%;
+    margin-bottom: -80px;
+}
+
+#titleScreen p {
+    margin: 6px 0;
+}
+
+#newGameButton,
+#howToButton,
+#continueButton {
+    width: 500px;
+    height: 120px;
+
     border: none;
-    border-radius: 8px;
+    background-color: transparent;
     cursor: pointer;
+
+    font-size: 0;
+    color: transparent;
+
+    margin: -34px 0;
+
+    background-position: center center;
+    background-size: contain;
+    background-repeat: no-repeat;
+
+    transition: transform .2s ease;
+}
+
+#newGameButton {
+    background-image: url("images/btn-new-game (1).png");
+}
+
+#howToButton {
+    background-image: url("images/btn-howto.png");
+}
+
+#continueButton {
+    background-image: url("images/btn-continue.png");
+}
+
+#newGameButton:hover,
+#howToButton:hover,
+#continueButton:hover {
+    transform: scale(1.05);
+}
+
+#newGameButton:active,
+#howToButton:active,
+#continueButton:active {
+    transform: scale(0.96);
+}
+
+/* =========================
+   ゲーム画面背景
+========================= */
+
+#gameScreen {
+    min-height: 100vh;
+
+    background-image: url("images/game-bg.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    position: relative;
+}
+
+/* 背景を少し暗くする */
+#gameScreen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* UIを背景より前に表示 */
+#gameScreen .game {
+    position: relative;
+    z-index: 1;
+}
+
+#closeHowToButton{
+    width: 380px;
+    height: 105px;
+
+    background: url("images/btn-close.png") center center;
+    background-repeat: no-repeat;
+    background-size: contain;
+
+    border: none;
+    cursor: pointer;
+
+    color: transparent;
+    font-size: 0;
+
+    display: block;
+    margin: 40px auto 0;
+}
+
+#closeHowToButton:hover{
+    transform: scale(1.05);
+}
+
+#closeHowToButton:active{
+    transform: scale(0.97);
+}
+
+#gameScreen .game,
+#gameScreen button,
+#cards,
+.card {
+    position: relative;
+    z-index: 2;
+}
+
+#nextButton {
+    width: 340px;
+    height: 100px;
+
+    background: url("images/btn-next.png") center center no-repeat;
+    background-size: 100% 100%;
+
+    border: none;
+    outline: none;
+
+    color: transparent;
+    font-size: 0;
+
+    cursor: pointer;
+
+    display: block;
+    margin: 20px auto;
+}
+
+.game-buttons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0px;
+    margin-top: -10px;
+}
+
+#nextButton,
+#menuButton{
+    width: 500px;
+    height: 130px;
+
+    border: none;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+}
+
+#nextButton{
+    background-image: url("images/btn-next.png");
+    margin-right: -100px;
+}
+
+#menuButton{
+    background-image: url("images/btn-menu.png");
+    margin-left: -100px;
+}
+
+#nextButton{
+    background-image: url("images/btn-next.png");
+}
+
+#menuButton{
+    background-image: url("images/btn-menu.png");
+}
+
+#nextButton:disabled{
+    opacity: 0.35;              /* 暗くする */
+    filter: grayscale(100%);    /* 少し白黒っぽく */
+    cursor: not-allowed;
+    pointer-events: none;
+    transition: 0.3s;
+}
+
+#nextButton:not(:disabled){
+    opacity: 1;
+    filter: none;
+    cursor: pointer;
+}
+
+#titleButton{
+    width: 550px;
+    height: 160px;
+
+    background: url("images/btn-title.png") center center / contain no-repeat;
+
+    border: none;
+    background-color: transparent;
+
+    color: transparent;
+    font-size: 0;
+
+    cursor: pointer;
+}
+
+#saveButton{
+    width: 550px;
+    height: 160px;
+
+    background: url("images/btn-save.png") center center / contain no-repeat;
+
+    border: none;
+    background-color: transparent;
+
+    color: transparent;
+    font-size: 0;
+
+    cursor: pointer;
+}
+
+#closeButton{
+    width: 550px;
+    height: 160px;
+
+    background: url("images/btn-close.png") center center / contain no-repeat;
+
+    border: none;
+    background-color: transparent;
+
+    color: transparent;
+    font-size: 0;
+
+    cursor: pointer;
+
+    
+}
+
+#saveOkButton{
+    margin-top: 230px;
+}
+
+#saveCloseButton{
+    width: 550px;
+    height: 160px;
+
+    background: url("images/btn-close.png") center center / contain no-repeat;
+
+    border: none;
+    background-color: transparent;
+
+    color: transparent;
+    font-size: 0;
+
+    cursor: pointer;
+
+    display: block;
+    margin: 200px auto 0;
+}
+
+#moneyCloseButton{
+    width: 550px;
+    height: 160px;
+
+    background: url("images/btn-close.png") center center / contain no-repeat;
+
+    border: none;
+    background-color: transparent;
+
+    color: transparent;
+    font-size: 0;
+
+    cursor: pointer;
+
+    display: block;
+    margin: 200px auto 0;
+}
+
+#dropoutCloseButton{
+    width: 420px;
+    height: 110px;
+
+    background: url("images/btn-close.png") center center / contain no-repeat;
+
+    border: none;
+    background-color: transparent;
+
+    color: transparent;
+    font-size: 0;
+
+    cursor: pointer;
+
+    display: block;
+    margin: 50px auto 0;
+}
+
+#creditButton{
+    width: 150px;
+    height: 120px;
+    background: url("images/btn-credit.png") center/contain no-repeat;
+    border: none;
+    background-color: transparent;
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+    margin: -34px 0;
+}
+
+#creditCloseButton{
+    width: 560px;
+    height: 140px;
+    background: url("images/btn-close.png") center/contain no-repeat;
+    border: none;
+    background-color: transparent;
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+    display: block;
+    margin: 120px auto 0;
+}
+
+#confirmStartButton{
+    width: 550px;
+    height: 160px;
+    background: url("images/btn-new-game.png") center/contain no-repeat;
+    border: none;
+    background-color: transparent;
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+    display: block;
+    margin: 40px auto 0;
+}
+
+#newGameConfirmCloseButton{
+    width: 420px;
+    height: 90px;
+    background: url("images/btn-close.png") center/contain no-repeat;
+    border: none;
+    background-color: transparent;
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+    display: block;
+    margin: -20px auto 0;
+}
+
+#loadStartButton{
+    width: 600px;
+    height: 160px;
+    background: url("images/btn-continue.png") center/contain no-repeat;
+    border: none;
+    background-color: transparent;
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+    display: block;
+    margin: 40px auto 0;
+}
+
+#loadCloseButton{
+    width: 480px;
+    height: 140px;
+    background: url("images/btn-close.png") center/contain no-repeat;
+    border: none;
+    background-color: transparent;
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+    display: block;
+    margin: 80px auto 0;
+}
+
+#loadText{
+    text-align: center;
+    margin-top: 120px;
+    margin-bottom: 40px;
+    font-size: 28px;
+    line-height: 1.8;
 }

@@ -9,69 +9,187 @@
 
 <body>
 
-    <main class="game">
+    <div id="newGameConfirmModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>確認</h2>
 
-            <h1>運命のカード</h1>
+            <p>
+                セーブデータがあります。<br>
+                はじめから開始すると、現在のセーブデータは初期化されます。
+            </p>
 
+            <button id="confirmStartButton" onclick="confirmStartNewGame()"></button>
+            <button id="newGameConfirmCloseButton" onclick="closeNewGameConfirmModal()"></button>
+        </div>
+    </div>
+
+    <div id="creditModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>クレジット</h2>
+
+            <p>
+                制作：tuyoshi yasuda<br><br>
+                画像制作：ChatGPT（OpenAI）<br>
+                プログラム補助：ChatGPT（OpenAI）<br><br>
+                ゲームタイトル：運命のカード
+            </p>
+
+            <button id="creditCloseButton" onclick="closeCreditModal()"></button>
+        </div>
+    </div>
+
+    <div id="loadModal" class="modal hidden">
+        <div class="modal-content">
+
+            <h2>ロード</h2>
+
+            <p id="loadText">
+                セーブデータをロードしますか？
+            </p>
+
+            <button id="loadStartButton"
+                onclick="loadGame()"></button>
+
+            <button id="loadCloseButton"
+                onclick="closeLoadModal()"></button>
+
+        </div>
+    </div>
+
+    <div id="titleScreen">
+        <img id="titleLogo" src="images/logo.png" alt="運命のカード">
+        <p>人生は選択の連続。</p>
+        <p>あなたはどんな人生を歩むのか。</p>
+
+        <button id="newGameButton" onclick="startGame()"></button>
+        <button id="howToButton" onclick="showHowToPlay()"></button>
+        <button id="continueButton" onclick="showLoadModal()"></button>
+        <button id="creditButton" onclick="showCreditModal()"></button>
+    </div>
+
+    <div id="gameScreen" style="display:none;">
+
+        <main class="game">
+            
             <div class="status">
 
-        <p>年齢：<span id="age">15</span>歳</p>
-        <p>健康：<span id="health">50</span></p>
+            <div class="status-left">
+                <p>年齢：<span id="age">15</span>歳</p>
 
-        <p>
-            日付：
-            <span id="year">2026</span>年
-            <span id="month">4</span>月
-        </p>
-        <p>精神：<span id="mental">50</span></p>
+                <p>日付：
+                    <span id="year">2026</span>年
+                    <span id="month">4</span>月
+                </p>
 
-        <p id="studyStatus">
-            学力：<span id="study">50</span>
-        </p>
-        <p>お金：<span id="money">1000</span>円</p>
+                <p id="studyStatus">
+                    学力：<span id="study">50</span>
+                </p>
 
-        <p></p>
-        <p>幸運：<span id="luck">50</span></p>
+                <p>
+                    幸運：<span id="luck">50</span>
+                </p>
+            </div>
 
-    </div>
+            <div class="status-right">
+                <p>健康：<span id="health">50</span></p>
 
-        <p id="message">
-            裏向きのカードを1枚選んでください。
-        </p>
+                <p>精神：<span id="mental">50</span></p>
 
-        <div id="cards" class="cards"></div>
+                <p>お金：<span id="money">1000</span>円</p>
 
-        <button id="nextButton" onclick="nextTurn()" disabled>
-            次を引く
-        </button>
+                <p id="positionStatus" style="display:none;">
+                    役職：<span id="position"></span>
+                </p>
 
-    </main>
+                <p id="contributionStatus" style="display:none;">
+                    貢献度：<span id="contribution"></span>
+                </p>
 
-    <div id="gameOverModal" class="modal hidden">
-        <div class="modal-content">
-            <h2>ゲームオーバー</h2>
-            <p id="gameOverText">人生が限界を迎えました。</p>
-            <button onclick="restartGame()">最初からやり直す</button>
+                <p id="salaryStatus" style="display:none;">
+                    給料：<span id="salary"></span>円
+                </p>
+            </div>
+
         </div>
-    </div>
 
-    <div id="dropoutModal" class="modal hidden">
-        <div class="modal-content">
-            <h2>退学</h2>
-            <p>学力が0になり、大学を退学しました。</p>
+            <p id="message">裏向きのカードを1枚選んでください。</p>
 
-            <button onclick="closeDropoutModal()">閉じる</button>
+            <div id="cards" class="cards"></div>
+
+            <div class="game-buttons">
+            <div class="game-buttons">
+            <button id="nextButton" onclick="nextTurn()" disabled></button>
+
+            <button id="menuButton" onclick="showMenuModal()"></button>
+        
         </div>
-    </div>
 
-    <div id="moneyModal" class="modal hidden">
-        <div class="modal-content">
-            <h2>お金が足りません</h2>
-            <p id="moneyModalText">お金が足りず諦めた。</p>
-            <button onclick="closeMoneyModal()">閉じる</button>
+        
+        </main>
+
+        <div id="gameOverModal" class="modal hidden">
+            <div class="modal-content">
+                <h2>ゲームオーバー</h2>
+                <p id="gameOverText">人生が限界を迎えました。</p>
+                <button onclick="restartGame()">最初からやり直す</button>
+            </div>
         </div>
+
+        <div id="dropoutModal" class="modal hidden">
+            <div class="modal-content">
+                <h2>退学</h2>
+                <p id="dropoutText">学力が0になり、退学しました。</p>
+                <button id="dropoutCloseButton" onclick="closeDropoutModal()"></button>
+            </div>
+        </div>
+
+       <div id="moneyModal" class="modal hidden">
+            <div class="modal-content">
+                <h2>お金が足りません</h2>
+                <p id="moneyModalText">お金が足りず、諦めた。</p>
+                <button id="moneyCloseButton" onclick="closeMoneyModal()"></button>
+            </div>
+        </div>
+
     </div>
 
+    <div id="howToPlayModal" class="modal hidden">
+    <div class="modal-content">
+        <h2>遊び方</h2>
+
+        <p id="howToPlayText">
+            ・毎月3枚のカードから1枚選びます。<br><br>
+            ・カードによってステータスが変化します。<br><br>
+            ・健康・精神・お金を管理しながら60歳を目指しましょう。<br><br>
+            ・学生時代は学力（勉学）も重要です。<br><br>
+            ・大学卒業後は就職活動が始まります。
+        </p>
+
+        <button id="closeHowToButton" onclick="closeHowToPlayModal()">閉じる</button>
+    </div>
+</div>
+
+<div id="menuModal" class="modal hidden">
+    <div class="modal-content">
+        <h2>メニュー</h2>
+
+        <button id="titleButton" onclick="backToTitle()"></button>
+        <button id="saveButton" onclick="saveGame()"></button>
+        <button id="closeButton" onclick="closeMenuModal()"></button>
+    </div>
+</div>
+
+<div id="saveModal" class="modal hidden">
+    <div class="modal-content">
+        <h2>セーブ完了</h2>
+        <p>ゲームをセーブしました。</p>
+        <button id="saveCloseButton" onclick="closeSaveModal()"></button>
+    </div>
+</div>
+
+    <audio id="titleBgm" src="sounds/bgm-title.mp3" loop></audio>
+    <audio id="gameBgm" src="sounds/bgm-game.mp3" loop></audio>
+    <audio id="cardFlipSe" src="sounds/card-flip.mp3"></audio>
     <script src="script.js"></script>
 
 </body>

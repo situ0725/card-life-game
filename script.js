@@ -4,7 +4,7 @@ let month = 4;
 
 let health = 50;
 let mental = 50;
-let money = 1000;
+let money = 5000;
 let luck = 50;
 let study = 50;
 
@@ -22,6 +22,18 @@ let jobType = "";        // big / middle / small / none
 
 let isCramSchool = false;
 
+let isJobHunting = false;
+let jobHuntingTurn = 0;
+
+let isWorking = false;
+
+let contribution = 50;    // 貢献度
+let position = "一般社員"; // 役職
+let salary = 0;           // 毎ターンの給料
+
+const maxJobHuntingTurn = 3;
+
+
 const cardList15 = [
 
     // ===== 学力 =====
@@ -31,7 +43,8 @@ const cardList15 = [
         icon: "📖",
         text: "テスト勉強の成果が出た。",
         effect: () => {
-            study += 6;
+            study += 5;
+            mental -= 3;
         }
     },
 
@@ -41,7 +54,7 @@ const cardList15 = [
         text: "テストに向けて一生懸命勉強した。",
         effect: () => {
             study += 4;
-            //mental -= 3;
+            mental -= 3;
         }
     },
 
@@ -61,7 +74,7 @@ const cardList15 = [
         icon: "👨‍🏫",
         text: "友達と一緒に勉強して理解が深まった。",
         effect: () => {
-            study += 4;
+            study += 3;
             mental += 3;
             luck += 2;
         }
@@ -119,6 +132,7 @@ const cardList15 = [
         effect: () => {
             money += 1000;
             study -= 1;
+            luck += 2;
         }
     },
 
@@ -131,6 +145,7 @@ const cardList15 = [
         effect: () => {
             luck += 10;
             study += 2;
+           
         }
     },
 
@@ -226,13 +241,16 @@ const cardList15 = [
 
              if (money < 2000) {
                 showMoneyModal("お金が足りず、諦めた。");
+
+                study -= 1;
+                luck -= 2;
                 return;
             }
 
             money -= 2000;
             mental += 10;
             luck += 3;
-            study -= 2;
+            study -= 1;
         }
     },
     {
@@ -243,13 +261,16 @@ const cardList15 = [
 
              if (money < 3000) {
                 showMoneyModal("お金が足りず、諦めた。");
+
+                study -= 1;
+                luck -= 2;
                 return;
             }
 
             money -= 3000;
             mental += 12;
             luck += 2;
-            study -= 2;
+            study -= 1;
         }
     },
     {
@@ -260,12 +281,16 @@ const cardList15 = [
 
              if (money < 1500) {
                 showMoneyModal("お金が足りず、諦めた。");
+                study -= 1;
+                luck -= 2;
                 return;
             }
 
             money -= 1500;
             mental += 8;
-            luck += 2;
+            luck += 1;
+            study -= 1;
+            health += 2;
         }
     },
     {
@@ -275,13 +300,15 @@ const cardList15 = [
         effect: () => {
              if (money < 5000) {
                 showMoneyModal("お金が足りず、諦めた。");
+                study -= 1;
+                luck -= 2;
                 return;
             }
 
-            money -= 5000;
+            money -= 3000;
             mental += 15;
             luck += 3;
-            study -= 2;
+            study -= 1;
         }
     }
 
@@ -329,7 +356,7 @@ const cardListUniversity = [
         effect: () => {
             
             mental -= 5;
-            luck += 5;
+            study += 5;
         }
     },
 
@@ -341,11 +368,12 @@ const cardListUniversity = [
 
              if (money < 10000) {
                 showMoneyModal("お金が足りず、諦めた。");
+                luck -= 2;
                 return;
             }
 
             mental += 3;
-            luck += 1;
+            study -= 1;
             money -= 10000;
         }
     },
@@ -358,6 +386,7 @@ const cardListUniversity = [
         effect: () => {
             isPartTimeWorking = true;
             mental -= 3;
+            study -= 2;
         }
     },
 
@@ -377,8 +406,8 @@ const cardListUniversity = [
         icon: "😱",
         text: "単位を落としてしまった。",
         effect: () => {
-            mental -= 10;
-            luck -= 10;
+            mental -= 5;
+            study -= 5;
         }
     },
 
@@ -390,6 +419,7 @@ const cardListUniversity = [
 
              if (money < 25000) {
                 showMoneyModal("お金が足りず、諦めた。");
+                luck -= 2;
                 return;
             }
 
@@ -397,6 +427,7 @@ const cardListUniversity = [
             mental += 5;
             money -= 25000;
             luck += 2;
+            study -= 2;
         }
     },
 
@@ -408,6 +439,7 @@ const cardListUniversity = [
 
              if (money < 25000) {
                 showMoneyModal("お金が足りず、諦めた。");
+                luck -= 2;
                 return;
             }
 
@@ -415,6 +447,7 @@ const cardListUniversity = [
             mental += 5;
             money -= 25000;
             luck += 2;
+            study -= 2;
         }
     },
 
@@ -426,13 +459,15 @@ const cardListUniversity = [
 
              if (money < 10000) {
                 showMoneyModal("お金が足りず、諦めた。");
+                luck -= 2;
                 return;
             }
 
-            health += 5;
-            mental += 5;
+            health += 10;
+            mental += 10;
             money -= 10000;
             luck += 1;
+            study -= 1;
         }
     },
 
@@ -444,13 +479,15 @@ const cardListUniversity = [
 
              if (money < 25000) {
                 showMoneyModal("お金が足りず、諦めた。");
+                luck -= 2;
                 return;
             }
 
-            health += 10;
-            mental += 15;
+            health += 5;
+            mental += 5;
             money -= 25000;
             luck += 2;
+            study -= 1;
         }
     },
 
@@ -462,12 +499,14 @@ const cardListUniversity = [
 
              if (money < 10000) {
                 showMoneyModal("お金が足りず、諦めた。");
+                luck -= 2;
                 return;
             }
 
-            mental += 5;
+            mental += 2;
             money -= 10000;
             luck += 2;
+            study -= 2;
         }
     },
 
@@ -479,6 +518,7 @@ const cardListUniversity = [
             health += 5;
             mental += 5;
             luck += 1;
+            study -= 2;
         }
     },
 
@@ -516,7 +556,7 @@ const cardListUniversity = [
         effect: () => {
             
             mental += 5;
-            luck += 5;
+            study += 3;
         }
     },
 
@@ -525,9 +565,9 @@ const cardListUniversity = [
         icon: "💼",
         text: "インターンで社会経験を積んだ。",
         effect: () => {
-            study += 5;
+            
             mental += 3;
-            luck += 5;
+            study += 3;
         }
     },
 
@@ -539,12 +579,15 @@ const cardListUniversity = [
 
              if (money < 2000) {
                 showMoneyModal("お金が足りず、諦めた。");
+                study -= 1;
+                luck -= 2;
                 return;
             }
 
             money -= 2000;
-            mental += 10;
-            
+            mental += 3;
+            study -= 2;
+            luck += 1;
         }
     },
     {
@@ -555,12 +598,15 @@ const cardListUniversity = [
 
              if (money < 3000) {
                 showMoneyModal("お金が足りず、諦めた。");
+                study -= 1;
+                luck -= 2;
                 return;
             }
 
             money -= 3000;
             mental += 12;
             luck += 2;
+            study -= 2;
         }
     },
     {
@@ -571,13 +617,15 @@ const cardListUniversity = [
 
              if (money < 100) {
                 showMoneyModal("お金が足りず、諦めた。");
+                study -= 1;
+                luck -= 2;
                 return;
             }
 
             money -= 1500;
             mental += 8;
             luck += 1;
-            
+            study -= 2;
         }
     },
     {
@@ -588,47 +636,240 @@ const cardListUniversity = [
 
              if (money < 5000) {
                 showMoneyModal("お金が足りず、諦めた。");
+                study -= 1;
+                luck -= 2;
                 return;
             }
 
             money -= 5000;
             mental += 15;
             luck += 3;
+            study -= 2;
         }
     },
 
     {
-    name: "レポート提出漏れ",
-    icon: "📄",
-    text: "レポートの提出期限を忘れてしまった。",
-    effect: () => {
-    
-        mental -= 5;
-        luck -= 7;
-    }
-},
-
-{
-    name: "寝坊",
-    icon: "⏰",
-    text: "寝坊して講義に遅刻してしまった。",
-    effect: () => {
-        luck -= 7;
-        mental -= 3;
-    }
-},
-
-{
-    name: "自主休校",
-    icon: "🛌",
-    text: "今日は講義を休んでしまった。",
-    effect: () => {
+        name: "レポート提出漏れ",
+        icon: "📄",
+        text: "レポートの提出期限を忘れてしまった。",
+        effect: () => {
         
-        luck -= 7;
-        mental += 3;
-    }
-},
+            mental -= 5;
+            study -= 3;
+            luck -= 3;
+        }
+    },
 
+    {
+        name: "寝坊",
+        icon: "⏰",
+        text: "寝坊して講義に遅刻してしまった。",
+        effect: () => {
+            study -= 2;
+            mental -= 3;
+            health += 2;
+        }
+    },
+
+    {
+        name: "自主休校",
+        icon: "🛌",
+        text: "今日は講義を休んでしまった。",
+        effect: () => {
+            study -= 2;
+            luck -= 2;
+            mental += 3;
+            health += 2;
+        }
+    },
+
+    {
+        name: "風邪",
+         icon: "🤒",
+        text: "風邪をひいてしまった。",
+        effect: () => {
+            health -= 10;
+            mental -= 10;
+            study -= 3;
+        }
+    },
+
+    {
+        name: "単位を取った",
+        icon: "✅",
+        text: "無事に単位を取得した。",
+        effect: () => {
+            study += 10;
+            mental += 5;
+            luck += 2;
+        }
+    },
+
+    {
+        name: "ゼミに出席した",
+        icon: "👨‍🏫",
+        text: "ゼミで先生や仲間と議論し、知識が深まった。",
+        effect: () => {
+            study += 4;
+            mental += 2;
+            //luck += 1;
+        }
+    },
+
+];
+
+const cardListDroppedOut = [
+    {
+        name: "アルバイトを始めた",
+        icon: "🍔",
+        text: "アルバイトを始めた。",
+        needPartTime: false,
+        effect: () => {
+            isPartTimeWorking = true;
+            mental -= 3;
+            study -= 2;
+        }
+    },
+    {
+        name: "アルバイトを辞めた",
+        icon: "🚪",
+        text: "アルバイトを辞めた。",
+        needPartTime: true,
+        effect: () => {
+            isPartTimeWorking = false;
+            mental += 5;
+        }
+    },
+    {
+        name: "日雇い仕事",
+        icon: "💴",
+        text: "日雇い仕事でお金を稼いだ。",
+        effect: () => {
+            money += 8000;
+            health -= 2;
+            mental -= 2;
+            //study -= 1;
+        }
+    },
+    {
+        name: "十分な睡眠",
+        icon: "😴",
+        text: "しっかり眠って体調が回復した。",
+        effect: () => {
+            health += 8;
+            mental += 5;
+        }
+    },
+    {
+        name: "趣味で気分転換",
+        icon: "🎮",
+        text: "趣味を楽しんで気分転換した。",
+        effect: () => {
+            mental += 8;
+            luck += 3;
+            //study -= 1;
+        }
+    },
+    {
+        name: "将来への不安",
+        icon: "🌧️",
+        text: "将来への不安で気持ちが沈んだ。",
+        effect: () => {
+            mental -= 8;
+        }
+    },
+    {
+        name: "就職活動を考える",
+        icon: "📄",
+        text: "そろそろ就職活動を考え始めた。",
+        minLuck: 50,
+        effect: () => {
+            luck += 3;
+            mental -= 3;
+
+            isJobHunting = true;
+            jobHuntingTurn = 0;
+            nextCardCount = 2;
+        }
+    },
+
+    {
+        name: "就職活動",
+        icon: "📝",
+        text: "正社員を目指して就職活動を始めた。",
+        minMental: 30,
+        effect: () => {
+            isJobHunting = true;
+            jobHuntingTurn = 0;
+        }
+    }
+];
+
+const cardListJobHunting = [
+
+    {
+        name: "頑張る",
+        icon: "💪",
+        text: "就職活動を頑張った。",
+        effect: () => {
+            luck += 10;
+            mental -= 5;
+            jobHuntingTurn++;
+        }
+    },
+
+    {
+        name: "サボる",
+        icon: "😴",
+        text: "就職活動をサボってしまった。",
+        effect: () => {
+            luck -= 10;
+            mental += 3;
+            jobHuntingTurn++;
+        }
+    }
+
+];
+
+const cardListCompany = [
+    {
+        name: "仕事を頑張った",
+        icon: "💼",
+        text: "仕事を頑張り、会社での評価が上がった。",
+        effect: () => {
+            contribution += 10;
+            mental -= 3;
+        }
+    },
+    {
+        name: "仕事でミス",
+        icon: "😱",
+        text: "仕事でミスをして評価が下がった。",
+        effect: () => {
+            contribution -= 10;
+            mental -= 5;
+        }
+    },
+    {
+        name: "上司に褒められた",
+        icon: "👏",
+        text: "上司に褒められ、やる気が出た。",
+        effect: () => {
+            contribution += 8;
+            mental += 5;
+            luck += 2;
+        }
+    },
+    {
+        name: "残業",
+        icon: "🌙",
+        text: "残業して仕事を片付けた。",
+        effect: () => {
+            contribution += 6;
+            mental -= 5;
+            health -= 3;
+        }
+    }
 ];
 
 function getUniversityCard() {
@@ -638,6 +879,8 @@ function getUniversityCard() {
             icon: "🎓",
             text: "努力が実り、名門大学に合格した。",
             effect: () => {
+                universityRank = "elite";
+                isCramSchool = false;
                 mental += 20;
                 luck += 10;
             }
@@ -648,45 +891,10 @@ function getUniversityCard() {
         return {
             name: "普通の大学合格",
             icon: "🏫",
-            text: "無事に普通の大学へ進学することになった。",
-            effect: () => {
-                mental += 10;
-            }
-        };
-    }
-
-    return {
-        name: "Fラン大学進学",
-        icon: "🏚️",
-        text: "学力は足りなかったが、なんとか大学へ進学した。",
-        effect: () => {
-            mental -= 5;
-            luck -= 5;
-        }
-    };
-}
-
-function getUniversityCard() {
-    if (study >= 80) {
-        return {
-            name: "名門大学合格",
-            icon: "🎓",
-            text: "努力が実り、名門大学に合格した。",
-            effect: () => {
-                universityRank = "elite";
-                mental += 20;
-                luck += 10;
-            }
-        };
-    }
-
-    if (study >= 50) {
-        return {
-            name: "普通の大学合格",
-            icon: "🏫",
             text: "普通の大学へ進学することになった。",
             effect: () => {
                 universityRank = "normal";
+                isCramSchool = false;
                 mental += 10;
             }
         };
@@ -698,6 +906,7 @@ function getUniversityCard() {
         text: "なんとか大学へ進学することになった。",
         effect: () => {
             universityRank = "low";
+            isCramSchool = false;
             mental -= 5;
             luck -= 5;
         }
@@ -706,34 +915,31 @@ function getUniversityCard() {
 
 function getJobCard() {
 
+    // 幸運0なら大学ランクに関係なく就職失敗
     if (luck <= 0) {
-        return {
-            name: "就職できなかった",
-            icon: "❌",
-            text: "運に恵まれず、就職先が決まらなかった。",
-            effect: () => {
-                jobType = "none";
-                mental -= 20;
-                money -= 10000;
-            }
-        };
+        return noJobCard();
     }
 
+    // 名門大学
     if (universityRank === "elite") {
-        if (luck >= 70) return bigCompanyCard();
-        if (luck >= 40) return middleCompanyCard();
-        return smallCompanyCard();
+        if (study >= 80 && luck >= 70) return bigCompanyCard();
+        if (study >= 60 && luck >= 40) return middleCompanyCard();
+        if (study >= 40 && luck >= 20) return smallCompanyCard();
+        return noJobCard();
     }
 
+    // 普通大学
     if (universityRank === "normal") {
-        if (luck >= 80) return bigCompanyCard();
-        if (luck >= 50) return middleCompanyCard();
-        return smallCompanyCard();
+        if (study >= 85 && luck >= 80) return bigCompanyCard();
+        if (study >= 60 && luck >= 50) return middleCompanyCard();
+        if (study >= 40 && luck >= 20) return smallCompanyCard();
+        return noJobCard();
     }
 
+    // Fラン大学
     if (universityRank === "low") {
-        if (luck >= 90) return middleCompanyCard();
-        if (luck >= 50) return smallCompanyCard();
+        if (study >= 90 && luck >= 90) return middleCompanyCard();
+        if (study >= 50 && luck >= 40) return smallCompanyCard();
         return noJobCard();
     }
 
@@ -747,7 +953,12 @@ function bigCompanyCard() {
         text: "大手企業への就職が決まった。",
         effect: () => {
             jobType = "big";
-            money += 50000;
+            isWorking = true;
+
+            contribution = 50;
+            position = "一般社員";
+            salary = 30000;
+
             mental += 15;
             luck += 10;
         }
@@ -761,8 +972,11 @@ function middleCompanyCard() {
         text: "中堅企業への就職が決まった。",
         effect: () => {
             jobType = "middle";
-            money += 30000;
-            mental += 10;
+            isWorking = true;
+
+            contribution = 50;
+            position = "一般社員";
+            salary = 22000;
         }
     };
 }
@@ -774,7 +988,12 @@ function smallCompanyCard() {
         text: "小さい会社に就職した。",
         effect: () => {
             jobType = "small";
-            money += 15000;
+            isWorking = true;
+
+            contribution = 50;
+            position = "一般社員";
+            salary = 16000;
+
             mental += 5;
         }
     };
@@ -802,11 +1021,18 @@ function drawCards() {
 
     // ===== 年齢・イベントごとのカード =====
 
-    if (droppedOut) {
+    if (isJobHunting) {
+        availableCards = [...cardListJobHunting];
+        nextCardCount = 2;
+    }
+    else if (droppedOut) {
         availableCards = [...cardListDroppedOut];
     }
     else if (age === 22 && month === 12) {
-        availableCards = [getJobCard()];
+        isJobHunting = true;
+        jobHuntingTurn = 0;
+        availableCards = [...cardListJobHunting];
+        nextCardCount = 2;
     }
     else if (age === 18 && month === 12) {
         availableCards = [getUniversityCard()];
@@ -820,10 +1046,14 @@ function drawCards() {
     else if (age >= 16 && age <= 18) {
         availableCards = [...cardList16to17];
     }
+    else if (isWorking) {
+        availableCards = [...cardListCompany];
+    }
     else {
-        availableCards = [...cardListUniversity];
+        availableCards = [...cardListDroppedOut];
     }
 
+    
     // ===== 条件付きカード =====
 
     availableCards = availableCards.filter(card => {
@@ -857,6 +1087,20 @@ function drawCards() {
 
         return true;
     });
+
+    // 出せるカードが0枚になった場合の保険
+    if (availableCards.length === 0) {
+        availableCards = [
+            {
+                name: "何もない日",
+                icon: "🌙",
+                text: "特に大きな出来事はなかった。",
+                effect: () => {
+                    mental += 1;
+                }
+            }
+        ];
+    }
 
     // ===== 同じカードは同時に出さない =====
 
@@ -901,45 +1145,60 @@ function drawCards() {
         "裏向きのカードを1枚選んでください。";
 
     document.getElementById("nextButton").disabled = true;
+
+    console.log("nextCardCount =", nextCardCount);
+    console.log("currentCards =", currentCards.length);
+    console.log("selected =", selected);
 }
 
 function selectCard(index) {
 
     if (selected) return;
 
+    const card = currentCards[index];
+    if (!card) {
+        selected = false;
+        drawCards();
+        return;
+    }
+
+    playCardFlipSe();
+
     selected = true;
 
-    const card = currentCards[index];
-
     let extraMessage = "";
-
     const cardName = card.name;
 
     // アルバイト中なら収入
-    // （開始・終了カードでは収入なし）
     if (
         isPartTimeWorking &&
         cardName !== "アルバイトを始めた" &&
         cardName !== "アルバイトを辞めた"
     ) {
-
-        money += 30000;
+        money += 15000;
         mental -= 2;
         health -= 1;
 
-        // 学生の間だけ学力が下がる
-        if (age <= 18 && !droppedOut) {
+        if (age <= 22 && !droppedOut) {
             study -= 2;
         }
 
         extraMessage =
-            " アルバイト収入で30000円を受け取った。精神・健康が少し下がった。";
-
-        if (age <= 18 && !droppedOut) {
-            extraMessage += " 学力も少し下がった。";
-        }
+            " アルバイト収入で15000円を受け取った。精神・健康が少し下がった。";
     }
 
+    // 会社員なら給料
+    if (
+        isWorking &&
+        cardName !== "大手企業に就職" &&
+        cardName !== "中堅企業に就職" &&
+        cardName !== "小さい会社に就職"
+    ) {
+        money += salary;
+        extraMessage += ` 給料として${salary}円を受け取った。`;
+    }
+
+    // 塾
     if (
         isCramSchool &&
         cardName !== "塾に通い始めた" &&
@@ -947,28 +1206,22 @@ function selectCard(index) {
     ) {
         study += 2;
         mental -= 1;
-
-        extraMessage +=
-            " 塾の効果で学力が少し上がったが、少し疲れた。";
+        extraMessage += " 塾の効果で学力が少し上がったが、少し疲れた。";
     }
 
     // カード効果
     card.effect();
 
-    // ステータス補正
     clampStatus();
+    updateStatus();
 
-    // 学力0チェック
-    checkStudyZero();
-
+    // カードを表にする
     const cardElements = document.querySelectorAll(".card");
 
     cardElements.forEach((el, i) => {
-
         el.classList.add("disabled");
 
         if (i === index) {
-
             el.className = "card open";
 
             el.innerHTML = `
@@ -977,26 +1230,55 @@ function selectCard(index) {
                 <small>${card.text}</small>
             `;
         }
-
     });
 
-    updateStatus();
+    // 学力0チェック
+    checkStudyZero();
 
-    if (isGameOver()) {
+
+    // 就職活動終了
+    if (isJobHunting && jobHuntingTurn >= maxJobHuntingTurn) {
+
+        isJobHunting = false;
+        jobHuntingTurn = 0;
+        nextCardCount = 3;
+
+        currentCards = [getJobCard()];
+        selected = false;
+
+        const cardsArea = document.getElementById("cards");
+        cardsArea.innerHTML = "";
+
+        currentCards.forEach((resultCard, resultIndex) => {
+            const div = document.createElement("div");
+
+            div.className = "card back";
+            div.textContent = "";
+            div.onclick = () => selectCard(resultIndex);
+
+            cardsArea.appendChild(div);
+        });
 
         document.getElementById("message").textContent =
-            "健康・精神・お金のいずれかが限界になりました。";
+            "就職活動が終了した。結果カードを選んでください。";
 
-        showGameOverModal();
+        document.getElementById("nextButton").disabled = true;
 
         return;
     }
 
-    if (age >= 60) {
+    if (isGameOver()) {
+        document.getElementById("message").textContent =
+            "健康・精神・お金のいずれかが限界になりました。";
 
+        showGameOverModal();
+        document.getElementById("nextButton").disabled = true;
+        return;
+    }
+
+    if (age >= 60) {
         document.getElementById("message").textContent =
             "60歳まで生き抜きました！ゲームクリア！";
-
         return;
     }
 
@@ -1006,8 +1288,11 @@ function selectCard(index) {
     document.getElementById("nextButton").disabled = false;
 }
 
-
 function nextTurn() {
+
+    selected = false;
+    document.getElementById("nextButton").disabled = true;
+
     month++;
 
     if (month > 12) {
@@ -1025,14 +1310,18 @@ function nextTurn() {
     clampStatus();
     updateStatus();
     drawCards();
+
+    checkPromotion();
 }
 
 function updateStatus() {
 
+    // 年齢・日付
     document.getElementById("age").textContent = age;
     document.getElementById("year").textContent = year;
     document.getElementById("month").textContent = month;
 
+    // ステータス
     document.getElementById("health").textContent = health;
     document.getElementById("mental").textContent = mental;
     document.getElementById("money").textContent = money;
@@ -1040,13 +1329,56 @@ function updateStatus() {
 
     const studyStatus = document.getElementById("studyStatus");
 
-    // 学力は高校生で退学していない間だけ表示
-    if (age <= 18 && !droppedOut) {
-        studyStatus.style.display = "block";
-        document.getElementById("study").textContent = study;
+    const positionStatus = document.getElementById("positionStatus");
+    const contributionStatus = document.getElementById("contributionStatus");
+    const salaryStatus = document.getElementById("salaryStatus");
+
+    if (isWorking) {
+
+        positionStatus.style.display = "block";
+        contributionStatus.style.display = "block";
+        salaryStatus.style.display = "block";
+
+        document.getElementById("position").textContent = position;
+        document.getElementById("contribution").textContent = contribution;
+        document.getElementById("salary").textContent = salary;
+
     } else {
-        studyStatus.style.display = "none";
+
+        positionStatus.style.display = "none";
+        contributionStatus.style.display = "none";
+        salaryStatus.style.display = "none";
+
     }
+
+    // 退学・就職後は学力（勉学）を非表示
+    if (droppedOut || jobType !== "") {
+
+        studyStatus.style.display = "none";
+
+    }
+    // 大学生
+    else if (age >= 19) {
+
+        studyStatus.style.display = "block";
+        studyStatus.innerHTML =
+            `勉学：<span id="study">${study}</span>`;
+
+    }
+    // 高校生
+    else {
+
+        studyStatus.style.display = "block";
+        studyStatus.innerHTML =
+            `学力：<span id="study">${study}</span>`;
+
+    }
+
+    // ステータスの上限・下限
+    health = Math.max(0, Math.min(100, health));
+    mental = Math.max(0, Math.min(100, mental));
+    luck = Math.max(0, Math.min(100, luck));
+    study = Math.max(0, Math.min(100, study));
 
 }
 
@@ -1063,7 +1395,13 @@ function showDropoutModal() {
 }
 
 function closeDropoutModal() {
+
     document.getElementById("dropoutModal").classList.add("hidden");
+
+    selected = false;
+    nextCardCount = 3;
+
+    drawCards();
 }
 
 function showMoneyModal(text) {
@@ -1075,8 +1413,281 @@ function closeMoneyModal() {
     document.getElementById("moneyModal").classList.add("hidden");
 }
 
+function showSaveModal() {
+    document.getElementById("saveModal").classList.remove("hidden");
+}
+
+function closeSaveModal() {
+    document.getElementById("saveModal").classList.add("hidden");
+}
+
+function showCreditModal() {
+    document.getElementById("creditModal").classList.remove("hidden");
+}
+
+function closeCreditModal() {
+    document.getElementById("creditModal").classList.add("hidden");
+}
+
 function restartGame() {
     location.reload();
+}
+
+function startGame() {
+    const saveText = localStorage.getItem("cardLifeSave");
+
+    if (saveText) {
+        showNewGameConfirmModal();
+        return;
+    }
+
+    startNewGame();
+}
+
+function startNewGame() {
+    resetGameData();
+
+    document.getElementById("titleScreen").style.display = "none";
+    document.getElementById("gameScreen").style.display = "block";
+
+    playGameBgm();
+
+    updateStatus();
+    drawCards();
+}
+
+function confirmStartNewGame() {
+    localStorage.removeItem("cardLifeSave"); // セーブデータ削除
+    closeNewGameConfirmModal();
+    startNewGame();
+}
+
+function showNewGameConfirmModal() {
+    document.getElementById("newGameConfirmModal").classList.remove("hidden");
+}
+
+function closeNewGameConfirmModal() {
+    document.getElementById("newGameConfirmModal").classList.add("hidden");
+}
+
+function showLoadModal() {
+
+    const save = localStorage.getItem("cardLifeSave");
+
+    if (!save) {
+
+        document.getElementById("loadText").textContent =
+        "セーブデータがありません。";
+
+        document.getElementById("loadStartButton").style.display =
+        "none";
+
+    } else {
+
+        const data = JSON.parse(save);
+
+        document.getElementById("loadText").innerHTML =
+        `年齢：${data.age}歳<br>${data.year}年${data.month}月`;
+
+        document.getElementById("loadStartButton").style.display =
+        "block";
+    }
+
+    document.getElementById("loadModal")
+        .classList.remove("hidden");
+}
+
+function closeLoadModal() {
+
+    document.getElementById("loadModal")
+        .classList.add("hidden");
+
+}
+
+function playTitleBgm() {
+    const titleBgm = document.getElementById("titleBgm");
+    const gameBgm = document.getElementById("gameBgm");
+
+    gameBgm.pause();
+    gameBgm.currentTime = 0;
+
+    titleBgm.volume = 0.4;
+    titleBgm.play();
+}
+
+function playGameBgm() {
+    const titleBgm = document.getElementById("titleBgm");
+    const gameBgm = document.getElementById("gameBgm");
+
+    titleBgm.pause();
+    titleBgm.currentTime = 0;
+
+    gameBgm.volume = 0.35;
+    gameBgm.play();
+}
+
+function playCardFlipSe() {
+    const se = document.getElementById("cardFlipSe");
+    se.currentTime = 0;
+    se.volume = 0.5;
+    se.play();
+}
+
+function stopAllBgm() {
+    document.getElementById("titleBgm").pause();
+    document.getElementById("gameBgm").pause();
+}
+
+function resetGameData() {
+
+    age = 15;
+    year = 2026;
+    month = 4;
+
+    health = 50;
+    mental = 50;
+    money = 5000;
+    luck = 50;
+    study = 50;
+
+    hasPartner = false;
+    isPartTimeWorking = false;
+    currentCards = [];
+    selected = false;
+    nextCardCount = 3;
+    droppedOut = false;
+    universityRank = "";
+    jobType = "";
+    isCramSchool = false;
+    isJobHunting = false;
+    jobHuntingTurn = 0;
+    isWorking = false;
+    contribution = 50;
+    position = "一般社員";
+    salary = 0;
+
+    localStorage.removeItem("cardLifeSave");
+}
+
+function startGame() {
+    const saveText = localStorage.getItem("cardLifeSave");
+
+    console.log("saveText =", saveText);
+
+    if (saveText) {
+        showNewGameConfirmModal();
+        return;
+    }
+
+    startNewGame();
+}
+
+function loadGame() {
+    const saveText = localStorage.getItem("cardLifeSave");
+
+    if (!saveText) {
+        alert("セーブデータがありません。");
+        return;
+    }
+
+    const saveData = JSON.parse(saveText);
+
+    age = saveData.age;
+    year = saveData.year;
+    month = saveData.month;
+    health = saveData.health;
+    mental = saveData.mental;
+    money = saveData.money;
+    luck = saveData.luck;
+    study = saveData.study;
+
+    hasPartner = saveData.hasPartner;
+    isPartTimeWorking = saveData.isPartTimeWorking;
+    nextCardCount = saveData.nextCardCount;
+    droppedOut = saveData.droppedOut;
+    universityRank = saveData.universityRank;
+    jobType = saveData.jobType;
+
+    isCramSchool = saveData.isCramSchool;
+    isJobHunting = saveData.isJobHunting;
+    jobHuntingTurn = saveData.jobHuntingTurn;
+
+    isWorking = saveData.isWorking;
+    contribution = saveData.contribution;
+    position = saveData.position;
+    salary = saveData.salary;
+
+    document.getElementById("titleScreen").style.display = "none";
+    document.getElementById("gameScreen").style.display = "block";
+
+    playGameBgm();
+
+    updateStatus();
+    drawCards();
+
+    closeLoadModal();
+}
+
+function showHowToPlay() {
+    document.getElementById("howToPlayModal").classList.remove("hidden");
+}
+
+function closeHowToPlayModal() {
+    document.getElementById("howToPlayModal").classList.add("hidden");
+}
+
+function showMenuModal() {
+    document.getElementById("menuModal").classList.remove("hidden");
+}
+
+function closeMenuModal() {
+    document.getElementById("menuModal").classList.add("hidden");
+}
+
+function backToTitle() {
+
+    closeMenuModal();
+    
+
+    document.getElementById("gameScreen").style.display = "none";
+
+    const titleScreen = document.getElementById("titleScreen");
+    titleScreen.style.display = "flex";
+
+    playTitleBgm();
+
+}
+
+function checkPromotion() {
+
+    if (!isWorking) return;
+
+    if (contribution >= 100 && position === "一般社員") {
+
+        position = "主任";
+        salary += 8000;
+        mental += 10;
+
+        alert("昇進しました！ 主任になりました！");
+    }
+
+    if (contribution >= 200 && position === "主任") {
+
+        position = "係長";
+        salary += 12000;
+        mental += 15;
+
+        alert("昇進しました！ 係長になりました！");
+    }
+
+    if (contribution >= 350 && position === "係長") {
+
+        position = "課長";
+        salary += 18000;
+        mental += 20;
+
+        alert("昇進しました！ 課長になりました！");
+    }
 }
 
 function clampStatus() {
@@ -1092,7 +1703,11 @@ function checkStudyZero() {
 
         droppedOut = true;
         study = 0;
+
         hasPartner = false;
+        isJobHunting = false;
+        jobHuntingTurn = 0;
+        isCramSchool = false;
 
         if (age <= 18) {
 
@@ -1109,12 +1724,28 @@ function checkStudyZero() {
 
             document.getElementById("dropoutText").textContent =
                 "学力が0になり、大学を退学しました。";
-
         }
 
+        updateStatus();
         showDropoutModal();
+        return;
     }
 }
 
-updateStatus();
-drawCards();
+function saveGame() {
+    const saveData = {
+        age, year, month,
+        health, mental, money, luck, study,
+        hasPartner, isPartTimeWorking,
+        nextCardCount, droppedOut,
+        universityRank, jobType,
+        isCramSchool, isJobHunting,
+        jobHuntingTurn, isWorking,
+        contribution, position, salary
+    };
+
+    localStorage.setItem("cardLifeSave", JSON.stringify(saveData));
+
+    showSaveModal();
+}
+
