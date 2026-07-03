@@ -819,17 +819,12 @@ const cardListJobHunting = [
         effect: () => {
             interviewStage++;
 
-            if (interviewStage === 1) {
-                this.text = "一次面接に成功した。";
-            } else if (interviewStage === 2) {
-                this.text = "二次面接に成功した。";
-            } else if (interviewStage >= 3) {
-                this.text = "最終面接に成功した。内定が出た。";
-                createJobOffer();
-            }
-
             mental -= 3;
             luck += 3;
+
+            if (interviewStage >= 3) {
+                createJobOffer();
+            }
         }
     },
 
@@ -1059,7 +1054,7 @@ function drawCards() {
     }
     else if (age === 22 && month === 12) {
         isJobHunting = true;
-        jobHuntingTurn = 0;
+        interviewStage = 0;
         availableCards = [...cardListJobHunting];
         nextCardCount = 2;
     }
@@ -1265,37 +1260,6 @@ function selectCard(index) {
     checkStudyZero();
 
 
-    // 就職活動終了
-    if (isJobHunting && jobHuntingTurn >= maxJobHuntingTurn) {
-
-        isJobHunting = false;
-        jobHuntingTurn = 0;
-        nextCardCount = 3;
-
-        currentCards = [getJobCard()];
-        selected = false;
-
-        const cardsArea = document.getElementById("cards");
-        cardsArea.innerHTML = "";
-
-        currentCards.forEach((resultCard, resultIndex) => {
-            const div = document.createElement("div");
-
-            div.className = "card back";
-            div.textContent = "";
-            div.onclick = () => selectCard(resultIndex);
-
-            cardsArea.appendChild(div);
-        });
-
-        document.getElementById("message").textContent =
-            "就職活動が終了した。結果カードを選んでください。";
-
-        document.getElementById("nextButton").disabled = true;
-
-        return;
-    }
-
     if (isGameOver()) {
         document.getElementById("message").textContent =
             "健康・精神・お金のいずれかが限界になりました。";
@@ -1311,9 +1275,20 @@ function selectCard(index) {
         return;
     }
 
-    document.getElementById("message").textContent =
-        card.text + extraMessage + " 『次を引く』を押して次のカードへ進みます。";
+    let displayText = card.text;
 
+    if (cardName === "面接成功") {
+        if (interviewStage === 1) {
+            displayText = "一次面接に成功した。";
+        } else if (interviewStage === 2) {
+            displayText = "二次面接に成功した。";
+        } else if (interviewStage >= 3) {
+            displayText = "最終面接に成功した。内定が出た。";
+        }
+    }
+
+    document.getElementById("message").textContent =
+        displayText + extraMessage + " 『次を引く』を押して次のカードへ進みます。";
     document.getElementById("nextButton").disabled = false;
 }
 
