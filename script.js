@@ -35,7 +35,11 @@ let interviewStage = 0;        // 面接段階
 let pendingJobOffer = "";      // 内定候補
 let isChangingJob = false;     // 転職活動中か
 
+let studyWarningShown = false;
+
 const maxJobHuntingTurn = 3;
+
+
 
 
 const cardList15 = [
@@ -882,19 +886,21 @@ const cardListCompany = [
         }
     },
 
-    {
-        name: "転職活動",
-        icon: "🔄",
-        text: "より良い会社を目指して転職活動を始めた。",
-        effect: () => {
-            isJobHunting = true;
-            isChangingJob = true;
-            interviewStage = 0;
-            nextCardCount = 2;
-            mental -= 3;
-        }
-    },
+   
 ];
+
+const changeJobCard = {
+    name: "転職活動",
+    icon: "🔄",
+    text: "より良い会社を目指して転職活動を始めた。",
+    effect: () => {
+        isJobHunting = true;
+        isChangingJob = true;
+        interviewStage = 0;
+        nextCardCount = 2;
+        mental -= 3;
+    }
+};
 
 function getUniversityCard() {
     if (study >= 80) {
@@ -1049,6 +1055,16 @@ function drawCards() {
         availableCards = [...cardListJobHunting];
         nextCardCount = 2;
     }
+    else if (isWorking) {
+        availableCards = [...cardListCompany];
+
+        // 12月だけ転職カードを候補に追加
+        if (month === 12) {
+            availableCards.push(changeJobCard);
+        }
+
+        nextCardCount = 3;
+    }
     else if (droppedOut) {
         availableCards = [...cardListDroppedOut];
     }
@@ -1070,10 +1086,8 @@ function drawCards() {
     else if (age >= 16 && age <= 18) {
         availableCards = [...cardList16to17];
     }
-    else if (isWorking) {
-        availableCards = [...cardListCompany];
-    }
-    else {
+    
+     else {
         availableCards = [...cardListDroppedOut];
     }
 
@@ -1260,20 +1274,30 @@ function selectCard(index) {
     checkStudyZero();
 
 
-    if (isGameOver()) {
-        document.getElementById("message").textContent =
-            "健康・精神・お金のいずれかが限界になりました。";
+    if (mental <= 0) {
+        document.getElementById("gameOverText").textContent =
+            "精神を病んでしまいました。";
 
         showGameOverModal();
         document.getElementById("nextButton").disabled = true;
         return;
     }
 
-    if (age >= 60) {
-        document.getElementById("message").textContent =
-            "60歳まで生き抜きました！ゲームクリア！";
+    if (health <= 0) {
+        document.getElementById("gameOverText").textContent =
+            "健康を失い、人生の限界を迎えました。";
+
+        showGameOverModal();
+        document.getElementById("nextButton").disabled = true;
         return;
     }
+
+
+        if (age >= 60) {
+            document.getElementById("message").textContent =
+                "60歳まで生き抜きました！ゲームクリア！";
+            return;
+        }
 
     let displayText = card.text;
 
@@ -1387,7 +1411,7 @@ function updateStatus() {
 }
 
 function isGameOver() {
-    return health <= 0 || mental <= 0 || money <= -50000;
+    return health <= 0 || mental <= 0;
 }
 
 function showGameOverModal() {
@@ -1417,6 +1441,16 @@ function closeMoneyModal() {
     document.getElementById("moneyModal").classList.add("hidden");
 }
 
+function showStudyWarningModal() {
+    document.getElementById("studyWarningModal")
+        .classList.remove("hidden");
+}
+
+function closeStudyWarningModal() {
+    document.getElementById("studyWarningModal")
+        .classList.add("hidden");
+}
+
 function showSaveModal() {
     document.getElementById("saveModal").classList.remove("hidden");
 }
@@ -1434,6 +1468,9 @@ function closeCreditModal() {
 }
 
 function restartGame() {
+
+    studyWarningShown = false;
+
     location.reload();
 }
 
@@ -1658,7 +1695,10 @@ function resetGameData() {
     position = "一般社員";
     salary = 0;
 
+    studyWarningShown = false;
+
     localStorage.removeItem("cardLifeSave");
+    
 }
 
 function startGame() {
@@ -1791,6 +1831,11 @@ function clampStatus() {
 
 function checkStudyZero() {
 
+    if (study <= 10 && study > 0 && droppedOut === false && studyWarningShown === false) {
+        studyWarningShown = true;
+        showStudyWarningModal();
+    }
+
     if (study <= 0 && droppedOut === false) {
 
         droppedOut = true;
@@ -1802,15 +1847,12 @@ function checkStudyZero() {
         isCramSchool = false;
 
         if (age <= 18) {
-
             document.getElementById("message").textContent =
                 "学力が0になり、高校を退学しました。";
 
             document.getElementById("dropoutText").textContent =
                 "学力が0になり、高校を退学しました。";
-
         } else {
-
             document.getElementById("message").textContent =
                 "学力が0になり、大学を退学しました。";
 

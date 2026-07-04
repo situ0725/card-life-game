@@ -333,10 +333,9 @@ button {
     margin-top: -10px;
 }
 
-#nextButton,
-#menuButton{
-    width: 500px;
-    height: 130px;
+#nextButton{
+    width: 220px;
+    height: 60px;
 
     border: none;
     background-color: transparent;
@@ -349,14 +348,28 @@ button {
     cursor: pointer;
 }
 
+#menuButton{
+    width: 240px;
+    height: 60px;
+
+    border: none;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+}
 #nextButton{
     background-image: url("images/btn-next.png");
-    margin-right: -100px;
+    margin-right: -0px;
 }
 
 #menuButton{
     background-image: url("images/btn-menu.png");
-    margin-left: -100px;
+    margin-left: 0px;
 }
 
 #nextButton{
@@ -601,4 +614,55 @@ button {
     transform: translateY(110px); /* 下へ移動 */
 }
 
+#jobOfferModal .modal-content {
+    text-align: center;
+}
 
+#acceptJobButton,
+#declineJobButton {
+    display: block;
+    width: 220px;
+    margin: 20px auto;
+}
+
+
+#gameOverModal button {
+    margin-top: 10px !important;
+}
+
+#studyWarningModal button{
+    margin-top: 60px;
+}
+
+#studyWarningCloseButton{
+    width: 260px;
+    height: 70px;
+
+    border: none;
+    background: transparent;
+    background-image: url("images/btn-close.png"); /* ボタン画像 */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+
+    margin-top: 60px;
+}
+
+#studyWarningCloseButton {
+    width: 220px;
+    height: 60px;
+    border: none;
+    background-color: transparent;
+    background-image: url("images/btn-close.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+    margin-top: 50px;
+}

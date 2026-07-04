@@ -89,14 +89,20 @@
                 <p>
                     幸運：<span id="luck">50</span>
                 </p>
+
+                <p id="salaryStatus" style="display:none;">
+                    給料：<span id="salary"></span>円
+                </p>
             </div>
 
             <div class="status-right">
-                <p>健康：<span id="health">50</span></p>
+                <p>
+                    健康：<span id="health">50</span>
 
-                <p>精神：<span id="mental">50</span></p>
+                    精神：<span id="mental">50</span>
+                </p>
 
-                <p>お金：<span id="money">1000</span>円</p>
+                <p>所持金：<span id="money">1000</span>円</p>
 
                 <p id="positionStatus" style="display:none;">
                     役職：<span id="position"></span>
@@ -106,9 +112,7 @@
                     貢献度：<span id="contribution"></span>
                 </p>
 
-                <p id="salaryStatus" style="display:none;">
-                    給料：<span id="salary"></span>円
-                </p>
+                
             </div>
 
         </div>
@@ -131,8 +135,28 @@
         <div id="gameOverModal" class="modal hidden">
             <div class="modal-content">
                 <h2>ゲームオーバー</h2>
+
                 <p id="gameOverText">人生が限界を迎えました。</p>
-                <button onclick="restartGame()">最初からやり直す</button>
+
+                <div style="height:80px;"></div>
+
+                <button id="gameOverRestartButton" onclick="restartGame()">
+                    最初からやり直す
+                </button>
+            </div>
+        </div>
+
+        <div id="studyWarningModal" class="modal hidden">
+            <div class="modal-content">
+
+                <h2>警告</h2>
+
+                <p id="studyWarningText">
+                    あと10学力が下がると退学になります。
+                </p>
+
+                <button id="studyWarningCloseButton" onclick="closeStudyWarningModal()">閉じる</button>.
+
             </div>
         </div>
 
@@ -149,6 +173,17 @@
                 <h2>お金が足りません</h2>
                 <p id="moneyModalText">お金が足りず、諦めた。</p>
                 <button id="moneyCloseButton" onclick="closeMoneyModal()"></button>
+            </div>
+        </div>
+
+        <div id="jobOfferModal" class="modal hidden">
+            <div class="modal-content">
+                <h2>内定</h2>
+
+                <p id="jobOfferText">会社から内定が出ました。</p>
+
+                <button id="acceptJobButton" onclick="acceptJobOffer()">承諾</button>
+                <button id="declineJobButton" onclick="declineJobOffer()">辞退</button>
             </div>
         </div>
 
