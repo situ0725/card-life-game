@@ -36,6 +36,8 @@ let pendingJobOffer = "";      // 内定候補
 let isChangingJob = false;     // 転職活動中か
 
 let studyWarningShown = false;
+let healthWarningShown = false;
+let mentalWarningShown = false;
 
 const maxJobHuntingTurn = 3;
 
@@ -1272,6 +1274,8 @@ function selectCard(index) {
 
     // 学力0チェック
     checkStudyZero();
+    checkHealthWarning();
+    checkMentalWarning();
 
 
     if (mental <= 0) {
@@ -1437,6 +1441,26 @@ function showMoneyModal(text) {
     document.getElementById("moneyModal").classList.remove("hidden");
 }
 
+function checkHealthWarning() {
+
+    if (health <= 10 && !healthWarningShown) {
+
+        healthWarningShown = true;
+
+        showHealthWarningModal();
+    }
+
+}
+
+function checkMentalWarning() {
+
+    if (mental <= 10 && !mentalWarningShown) {
+        mentalWarningShown = true;
+        showMentalWarningModal();
+    }
+
+}
+
 function closeMoneyModal() {
     document.getElementById("moneyModal").classList.add("hidden");
 }
@@ -1444,6 +1468,26 @@ function closeMoneyModal() {
 function showStudyWarningModal() {
     document.getElementById("studyWarningModal")
         .classList.remove("hidden");
+}
+
+function showHealthWarningModal() {
+    document.getElementById("healthWarningModal")
+        .classList.remove("hidden");
+}
+
+function showMentalWarningModal() {
+    document.getElementById("mentalWarningModal")
+        .classList.remove("hidden");
+}
+
+function closeMentalWarningModal() {
+    document.getElementById("mentalWarningModal")
+        .classList.add("hidden");
+}
+
+function closeHealthWarningModal() {
+    document.getElementById("healthWarningModal")
+        .classList.add("hidden");
 }
 
 function closeStudyWarningModal() {
@@ -1470,6 +1514,7 @@ function closeCreditModal() {
 function restartGame() {
 
     studyWarningShown = false;
+    healthWarningShown = false;
 
     location.reload();
 }
@@ -1696,6 +1741,8 @@ function resetGameData() {
     salary = 0;
 
     studyWarningShown = false;
+    healthWarningShown = false;
+    mentalWarningShown = false;
 
     localStorage.removeItem("cardLifeSave");
     
