@@ -39,6 +39,15 @@ let studyWarningShown = false;
 let healthWarningShown = false;
 let mentalWarningShown = false;
 
+let hasCar = false;
+let hasHouse = false;
+let isMarried = false;
+
+let pendingPurchaseType = "";
+let pendingSaleType = "";
+
+let relationshipMonths = 0;
+
 const maxJobHuntingTurn = 3;
 
 
@@ -888,6 +897,138 @@ const cardListCompany = [
         }
     },
 
+    {
+        name: "車を買う",
+        icon: "🚗",
+        text: "車の購入を検討した。",
+        needCar: false,
+        effect: () => {
+            pendingPurchaseType = "car";
+            showPurchaseModal();
+        }
+    },
+    {
+        name: "家を買う",
+        icon: "🏠",
+        text: "家の購入を検討した。",
+        needHouse: false,
+        effect: () => {
+            pendingPurchaseType = "house";
+            showPurchaseModal();
+        }
+    },
+    {
+        name: "車を売却する",
+        icon: "🚗",
+        text: "車の売却を考えた。",
+        needCar: true,
+        effect: () => {
+            pendingSaleType = "car";
+            showSaleModal();
+        }
+    },
+    {
+        name: "家を売却する",
+        icon: "🏠",
+        text: "家の売却を考えた。",
+        needHouse: true,
+        effect: () => {
+            pendingSaleType = "house";
+            showSaleModal();
+        }
+    },
+    {
+        name: "結婚",
+        icon: "💍",
+        text: "交際から2年が経ち、結婚した。",
+
+        needCar: true,
+        needHouse: true,
+        needPartner: true,
+        needMarried: false,
+        minRelationshipMonths: 24,
+
+        effect: () => {
+            isMarried = true;
+
+            mental += 20;
+            luck += 10;
+        }
+    },
+
+    {
+        name: "離婚",
+        icon: "💔",
+        text: "夫婦関係が悪化し、離婚してしまった。",
+
+        needMarried: true,
+        maxLuck: 30,
+
+        effect: () => {
+            isMarried = false;
+            hasPartner = false;
+            relationshipMonths = 0;
+
+            // 財産分与で所持金を半分にする
+            money = Math.floor(money / 2);
+
+            mental -= 20;
+            luck -= 10;
+        }
+    },
+
+    {
+        name: "交際を始める",
+        icon: "❤️",
+        text: "新しい相手と交際を始めた。",
+
+        needPartner: false,
+        needMarried: false,
+
+        effect: () => {
+            hasPartner = true;
+            relationshipMonths = 0;
+
+            mental += 10;
+            luck += 5;
+        }
+    },
+
+    {
+        name: "すれ違い",
+        icon: "💔",
+        text: "すれ違いが続き、別れてしまった。",
+
+        needPartner: true,
+        needMarried: false,
+        maxLuck: 30,
+
+        effect: () => {
+            hasPartner = false;
+            relationshipMonths = 0;
+
+            mental -= 20;
+            luck -= 5;
+        }
+    },
+
+    {
+        name: "心の余裕がなく別れた",
+        icon: "😢",
+        text: "精神的な余裕がなく、別れてしまった。",
+
+        needPartner: true,
+        needMarried: false,
+        maxMental: 20,
+
+        effect: () => {
+            hasPartner = false;
+            relationshipMonths = 0;
+
+            mental -= 15;
+        }
+    },
+
    
 ];
 
@@ -1065,7 +1206,10 @@ function drawCards() {
             availableCards.push(changeJobCard);
         }
 
-        nextCardCount = 3;
+        // 所持金10万円ごとにカードを1枚追加（最大6枚）
+        const moneyBonusCards = Math.floor(Math.max(0, money) / 100000);
+
+        nextCardCount = Math.min(6, 3 + moneyBonusCards);
     }
     else if (droppedOut) {
         availableCards = [...cardListDroppedOut];
@@ -1121,6 +1265,26 @@ function drawCards() {
         // ★塾
         if (card.needCramSchool === true && !isCramSchool) return false;
         if (card.needCramSchool === false && isCramSchool) return false;
+
+
+        if (card.needCar === true && !hasCar) return false;
+        if (card.needHouse === true && !hasHouse) return false;
+        if (card.needMarried === false && isMarried) return false;
+        if (card.needMarried === true && !isMarried) return false;
+
+        // 交際期間
+        if (
+            card.minRelationshipMonths !== undefined &&
+            relationshipMonths < card.minRelationshipMonths
+        ) {
+            return false;
+        }
+
+        if (card.needCar === true && !hasCar) return false;
+        if (card.needCar === false && hasCar) return false;
+
+        if (card.needHouse === true && !hasHouse) return false;
+        if (card.needHouse === false && hasHouse) return false;
 
         // 選択肢が4枚以上なら表示しない
         if (card.name === "選択肢が増えた" && nextCardCount >= 4) return false;
@@ -1325,6 +1489,11 @@ function nextTurn() {
     selected = false;
     document.getElementById("nextButton").disabled = true;
 
+    // 交際中で、まだ結婚していない場合
+    if (hasPartner && !isMarried) {
+        relationshipMonths++;
+    }
+
     month++;
 
     if (month > 12) {
@@ -1337,6 +1506,15 @@ function nextTurn() {
         } else if (age >= 50 && age < 60) {
             health -= 2;
         }
+    }
+
+    // 維持費
+    if (hasCar) {
+        money -= 10000;
+    }
+
+    if (hasHouse) {
+        money -= 30000;
     }
 
     clampStatus();
@@ -1519,17 +1697,6 @@ function restartGame() {
     location.reload();
 }
 
-function startGame() {
-    const saveText = localStorage.getItem("cardLifeSave");
-
-    if (saveText) {
-        showNewGameConfirmModal();
-        return;
-    }
-
-    startNewGame();
-}
-
 function startNewGame() {
     resetGameData();
 
@@ -1677,6 +1844,103 @@ function declineJobOffer() {
 }
 
 
+function closePurchaseModal() {
+    document.getElementById("purchaseModal").classList.add("hidden");
+}
+
+function closeSaleModal() {
+    document.getElementById("saleModal").classList.add("hidden");
+}
+
+function showPurchaseModal() {
+    if (pendingPurchaseType === "car") {
+        document.getElementById("purchaseText").textContent =
+            "車を100万円で購入しますか？";
+    }
+
+    if (pendingPurchaseType === "house") {
+        document.getElementById("purchaseText").textContent =
+            "家を500万円で購入しますか？";
+    }
+
+    document.getElementById("purchaseModal").classList.remove("hidden");
+}
+
+function acceptPurchase() {
+    if (pendingPurchaseType === "car") {
+        if (money < 1000000) {
+            showMoneyModal("車を買うお金が足りません。");
+            return;
+        }
+
+        money -= 1000000;
+        hasCar = true;
+        mental += 5;
+    }
+
+    if (pendingPurchaseType === "house") {
+        if (money < 5000000) {
+            showMoneyModal("家を買うお金が足りません。");
+            return;
+        }
+
+        money -= 5000000;
+        hasHouse = true;
+        mental += 10;
+    }
+
+    pendingPurchaseType = "";
+    closePurchaseModal();
+    updateStatus();
+
+    document.getElementById("nextButton").disabled = false;
+}
+
+function declinePurchase() {
+    pendingPurchaseType = "";
+    closePurchaseModal();
+
+    document.getElementById("nextButton").disabled = false;
+}
+
+function showSaleModal() {
+    if (pendingSaleType === "car") {
+        document.getElementById("saleText").textContent =
+            "車を60万円で売却しますか？";
+    }
+
+    if (pendingSaleType === "house") {
+        document.getElementById("saleText").textContent =
+            "家を350万円で売却しますか？";
+    }
+
+    document.getElementById("saleModal").classList.remove("hidden");
+}
+
+function acceptSale() {
+    if (pendingSaleType === "car") {
+        money += 600000;
+        hasCar = false;
+    }
+
+    if (pendingSaleType === "house") {
+        money += 3500000;
+        hasHouse = false;
+    }
+
+    pendingSaleType = "";
+    closeSaleModal();
+    updateStatus();
+
+    document.getElementById("nextButton").disabled = false;
+}
+
+function declineSale() {
+    pendingSaleType = "";
+    closeSaleModal();
+
+    document.getElementById("nextButton").disabled = false;
+}
 
 function playTitleBgm() {
     const titleBgm = document.getElementById("titleBgm");
@@ -1744,6 +2008,14 @@ function resetGameData() {
     healthWarningShown = false;
     mentalWarningShown = false;
 
+    hasCar = false;
+    hasHouse = false;
+    isMarried = false;
+    pendingPurchaseType = "";
+    pendingSaleType = "";
+
+    relationshipMonths = 0;
+
     localStorage.removeItem("cardLifeSave");
     
 }
@@ -1795,6 +2067,12 @@ function loadGame() {
     contribution = saveData.contribution;
     position = saveData.position;
     salary = saveData.salary;
+
+    hasCar = saveData.hasCar;
+    hasHouse = saveData.hasHouse;
+    isMarried = saveData.isMarried;
+
+    relationshipMonths = saveData.relationshipMonths ?? 0;
 
     document.getElementById("titleScreen").style.display = "none";
     document.getElementById("gameScreen").style.display = "block";
@@ -1922,7 +2200,11 @@ function saveGame() {
         universityRank, jobType,
         isCramSchool, isJobHunting,
         jobHuntingTurn, isWorking,
-        contribution, position, salary
+        contribution, position, salary,
+        hasCar,
+        hasHouse,
+        isMarried,
+        relationshipMonths,
     };
 
     localStorage.setItem("cardLifeSave", JSON.stringify(saveData));
