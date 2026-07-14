@@ -876,8 +876,8 @@ button {
 }
 
 #promotionCloseButton {
-    width: 260px;
-    height: 70px;
+    width: 660px;
+    height: 170px;
 
     border: none;
     background-color: transparent;
@@ -891,7 +891,7 @@ button {
     cursor: pointer;
 
     display: block;
-    margin: 90px auto 20px;
+    margin: 150px auto 20px;
 }
 
 #saleModal .modal-content {
