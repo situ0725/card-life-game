@@ -216,6 +216,25 @@
             </div>
         </div>
 
+        <div id="livingCostModal" class="modal hidden">
+            <div class="modal-content">
+                <h2>社会人生活</h2>
+
+                <p>
+                    社会人になると毎月、<br>
+                    食費30,000円と家賃50,000円がかかります。<br>
+                    家を購入すると家賃はかからなくなります。
+                </p>
+
+                <button id="livingCostCloseButton"
+                        onclick="closeLivingCostModal()">
+                    閉じる
+                </button>
+            </div>
+        </div>
+
+        
+
         <div id="purchaseModal" class="modal hidden">
             <div class="modal-content">
                 <h2>購入確認</h2>
@@ -236,6 +255,36 @@
             </div>
         </div>
 
+    </div>
+
+    <div id="promotionModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>昇進</h2>
+
+            <p id="promotionText">
+                昇進しました。
+            </p>
+
+            <button id="promotionCloseButton"
+                    onclick="closePromotionModal()">
+                閉じる
+            </button>
+        </div>
+    </div>
+
+    <div id="changeJobModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>転職確認</h2>
+
+            <p id="changeJobText">
+                転職活動を開始しますか？
+            </p>
+
+            <div class="modal-buttons">
+                <button id="changeJobYesButton" onclick="acceptChangeJob()"></button>
+                <button id="changeJobNoButton" onclick="declineChangeJob()"></button>
+            </div>
+        </div>
     </div>
 
     <div id="howToPlayModal" class="modal hidden">

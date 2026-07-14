@@ -828,3 +828,105 @@ button {
     /* ← 承諾との間隔 */
     margin: 25px auto 0 auto;
 }
+
+/* 社会人生活モーダルの閉じるボタン */
+#livingCostCloseButton {
+    width: 580px;
+    height: 170px;
+
+    border: none;
+    background-color: transparent;
+    background-image: url("images/btn-close.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+
+    display: block;
+
+    /* ボタンを下に下げる */
+    margin: 150px auto 20px;
+}
+
+#changeJobYesButton{
+    width:220px;
+    height:70px;
+    background:url("images/change_job.png") no-repeat center;
+    background-size:contain;
+    border:none;
+    cursor:pointer;
+    color:transparent;
+    display:block;
+    margin:25px auto 15px;
+}
+
+#changeJobNoButton{
+    width:220px;
+    height:70px;
+    background:url("images/not_change_job.png") no-repeat center;
+    background-size:contain;
+    border:none;
+    cursor:pointer;
+    color:transparent;
+    display:block;
+    margin:15px auto;
+}
+
+#promotionCloseButton {
+    width: 260px;
+    height: 70px;
+
+    border: none;
+    background-color: transparent;
+    background-image: url("images/btn-close.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+
+    display: block;
+    margin: 90px auto 20px;
+}
+
+#saleModal .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#saleText {
+    margin-bottom: 70px;
+}
+
+#saleAcceptButton,
+#saleDeclineButton {
+    display: block;
+
+    width: 260px;
+    height: 70px;
+
+    border: none;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+}
+
+#saleAcceptButton {
+    background-image: url("images/sell.png");
+    margin-bottom: 60px;
+}
+
+#saleDeclineButton {
+    background-image: url("images/not_sell.png");
+}

@@ -48,6 +48,8 @@ let pendingSaleType = "";
 
 let relationshipMonths = 0;
 
+let pendingChangeJob = false;
+
 const maxJobHuntingTurn = 3;
 
 
@@ -898,6 +900,41 @@ const cardListCompany = [
     },
 
     {
+        name: "帰省",
+        icon: "🏡",
+        text: "久しぶりに実家へ帰省し、家族と過ごした。",
+        effect: () => {
+
+            if (money < 30000) {
+                showMoneyModal("帰省するお金が足りません。");
+                return;
+            }
+
+            money -= 30000;
+            health += 5;
+            mental += 10;
+            luck += 3;
+        }
+    },
+
+    {
+        name: "趣味に没頭",
+        icon: "🎮",
+        text: "休日に趣味へ没頭し、気分転換した。",
+        effect: () => {
+
+            if (money < 20000) {
+                showMoneyModal("趣味を楽しむお金が足りません。");
+                return;
+            }
+
+            money -= 20000;
+            mental += 15;
+            luck += 5;
+        }
+    },
+
+    {
         name: "車を買う",
         icon: "🚗",
         text: "車の購入を検討した。",
@@ -1037,11 +1074,9 @@ const changeJobCard = {
     icon: "🔄",
     text: "より良い会社を目指して転職活動を始めた。",
     effect: () => {
-        isJobHunting = true;
-        isChangingJob = true;
-        interviewStage = 0;
-        nextCardCount = 2;
-        mental -= 3;
+
+        showChangeJobModal();
+
     }
 };
 
@@ -1409,7 +1444,7 @@ function selectCard(index) {
         cardName !== "塾をやめた"
     ) {
         study += 2;
-        mental -= 1;
+        mental -= 2;
         extraMessage += " 塾の効果で学力が少し上がったが、少し疲れた。";
     }
 
@@ -1515,6 +1550,16 @@ function nextTurn() {
 
     if (hasHouse) {
         money -= 30000;
+    }
+
+    // 食費
+    if (isWorking) {
+        money -= isMarried ? 50000 : 30000;
+    }
+    
+    // 家賃（持ち家がない社会人のみ）
+    if (isWorking && !hasHouse) {
+        money -= 50000;
     }
 
     clampStatus();
@@ -1689,6 +1734,16 @@ function closeCreditModal() {
     document.getElementById("creditModal").classList.add("hidden");
 }
 
+function showLivingCostModal() {
+    document.getElementById("livingCostModal")
+        .classList.remove("hidden");
+}
+
+function closeLivingCostModal() {
+    document.getElementById("livingCostModal")
+        .classList.add("hidden");
+}
+
 function restartGame() {
 
     studyWarningShown = false;
@@ -1819,6 +1874,8 @@ function acceptJobOffer() {
 
     updateStatus();
 
+    showLivingCostModal();
+
     document.getElementById("message").textContent =
         "就職が決まり、新しい生活が始まりました。";
 
@@ -1846,6 +1903,58 @@ function declineJobOffer() {
 
 function closePurchaseModal() {
     document.getElementById("purchaseModal").classList.add("hidden");
+}
+
+function showChangeJobModal(){
+
+    pendingChangeJob = true;
+
+    document.getElementById("changeJobModal").classList.remove("hidden");
+
+    document.getElementById("nextButton").disabled = true;
+}
+
+function acceptChangeJob(){
+
+    isJobHunting = true;
+    isChangingJob = true;
+
+    pendingChangeJob = false;
+
+    closeChangeJobModal();
+
+    updateStatus();
+
+    document.getElementById("nextButton").disabled = false;
+}
+
+function declineChangeJob(){
+
+    pendingChangeJob = false;
+
+    closeChangeJobModal();
+
+    updateStatus();
+
+    document.getElementById("nextButton").disabled = false;
+}
+
+function closeChangeJobModal(){
+
+    document.getElementById("changeJobModal").classList.add("hidden");
+}
+
+function showPromotionModal(text) {
+    document.getElementById("promotionText").textContent = text;
+    document.getElementById("promotionModal").classList.remove("hidden");
+
+    document.getElementById("nextButton").disabled = true;
+}
+
+function closePromotionModal() {
+    document.getElementById("promotionModal").classList.add("hidden");
+
+    document.getElementById("nextButton").disabled = false;
 }
 
 function closeSaleModal() {
@@ -2131,7 +2240,13 @@ function checkPromotion() {
         salary += 8000;
         mental += 10;
 
-        alert("昇進しました！ 主任になりました！");
+        updateStatus();
+
+        showPromotionModal(
+            "昇進しました！主任になりました。給料が8,000円増えました。"
+        );
+
+        return;
     }
 
     if (contribution >= 200 && position === "主任") {
@@ -2140,7 +2255,13 @@ function checkPromotion() {
         salary += 12000;
         mental += 15;
 
-        alert("昇進しました！ 係長になりました！");
+        updateStatus();
+
+        showPromotionModal(
+            "昇進しました！係長になりました。給料が12,000円増えました。"
+        );
+
+        return;
     }
 
     if (contribution >= 350 && position === "係長") {
@@ -2149,7 +2270,13 @@ function checkPromotion() {
         salary += 18000;
         mental += 20;
 
-        alert("昇進しました！ 課長になりました！");
+        updateStatus();
+
+        showPromotionModal(
+            "昇進しました！課長になりました。給料が18,000円増えました。"
+        );
+
+        return;
     }
 }
 
