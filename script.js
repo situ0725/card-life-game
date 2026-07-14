@@ -954,6 +954,61 @@ const cardListCompany = [
     },
 
     {
+        name: "友達と遊ぶ",
+        icon: "🍻",
+        text: "友達と遊び、楽しい時間を過ごした。",
+
+        effect: () => {
+
+            if (money < 15000) {
+                showMoneyModal("友達と遊ぶお金が足りません。");
+                return;
+            }
+
+            money -= 15000;
+            mental += 10;
+            luck += 5;
+        }
+    },
+
+    {
+        name: "ジムに通う",
+        icon: "🏋️",
+        text: "ジムで体を鍛え、健康的な生活を送った。",
+
+        effect: () => {
+
+            if (money < 12000) {
+                showMoneyModal("ジムに通うお金が足りません。");
+                return;
+            }
+
+            money -= 12000;
+            health += 10;
+            mental += 5;
+        }
+    },
+
+    {
+        name: "旅行に行く",
+        icon: "✈️",
+        text: "旅行へ出かけ、心も体もリフレッシュした。",
+
+        effect: () => {
+
+            if (money < 50000) {
+                showMoneyModal("旅行に行くお金が足りません。");
+                return;
+            }
+
+            money -= 50000;
+            health += 8;
+            mental += 15;
+            luck += 10;
+        }
+    },
+
+    {
         name: "車を売却する",
         icon: "🚗",
         text: "車の売却を考えた。",
