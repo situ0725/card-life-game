@@ -43,6 +43,9 @@ let hasCar = false;
 let hasHouse = false;
 let isMarried = false;
 
+let carSaleEvent = false;
+let houseSaleEvent = false;
+
 let pendingPurchaseType = "";
 let pendingSaleType = "";
 
@@ -935,31 +938,29 @@ const cardListCompany = [
     },
 
     {
-        name: "車を買う",
-        icon: "🚗",
-        text: "車の購入を検討した。",
-        needCar: false,
+        name: "健康診断",
+        icon: "🩺",
+        text: "健康診断を受け、体の状態を確認した。",
+
         effect: () => {
-            pendingPurchaseType = "car";
-            showPurchaseModal();
+            if (money < 10000) {
+                showMoneyModal("健康診断を受けるお金が足りません。");
+                return;
+            }
+
+            money -= 10000;
+            health += 10;
         }
     },
-    {
-        name: "家を買う",
-        icon: "🏠",
-        text: "家の購入を検討した。",
-        needHouse: false,
-        effect: () => {
-            pendingPurchaseType = "house";
-            showPurchaseModal();
-        }
-    },
+
     {
         name: "車を売却する",
         icon: "🚗",
         text: "車の売却を考えた。",
         needCar: true,
         effect: () => {
+            carSaleEvent = false;
+
             pendingSaleType = "car";
             showSaleModal();
         }
@@ -970,10 +971,13 @@ const cardListCompany = [
         text: "家の売却を考えた。",
         needHouse: true,
         effect: () => {
+            houseSaleEvent = false;
+
             pendingSaleType = "house";
             showSaleModal();
         }
     },
+    
     {
         name: "結婚",
         icon: "💍",
@@ -1321,6 +1325,16 @@ function drawCards() {
         if (card.needHouse === true && !hasHouse) return false;
         if (card.needHouse === false && hasHouse) return false;
 
+        // 車売却カード
+        if (card.name === "車を売却する") {
+            return carSaleEvent;
+        }
+
+        // 家売却カード
+        if (card.name === "家を売却する") {
+            return houseSaleEvent;
+        }
+
         // 選択肢が4枚以上なら表示しない
         if (card.name === "選択肢が増えた" && nextCardCount >= 4) return false;
 
@@ -1535,6 +1549,19 @@ function nextTurn() {
         month = 1;
         year++;
         age++;
+        // 年に一度だけ売却イベントを抽選
+        carSaleEvent = false;
+        houseSaleEvent = false;
+
+        // 車を所有しているなら15%で抽選
+        if (hasCar && Math.random() < 0.15) {
+            carSaleEvent = true;
+        }
+
+        // 家を所有しているなら10%で抽選
+        if (hasHouse && Math.random() < 0.10) {
+            houseSaleEvent = true;
+        }
 
         if (age >= 40 && age < 50) {
             health -= 1;
