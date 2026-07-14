@@ -786,3 +786,45 @@ button {
     display: block;
     margin: 80px auto 30px;
 }
+
+#purchaseModal .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#purchaseText {
+    margin-bottom: 40px;
+}
+
+/* 購入確認ボタン */
+#purchaseAcceptButton,
+#purchaseDeclineButton {
+    display: block;
+    width: 260px;
+    height: 70px;
+
+    border: none;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+}
+
+#purchaseAcceptButton {
+    background-image: url("images/btn-buy.png");
+
+    /* ← ここで下に下げる */
+    margin: 60px auto 25px auto;
+}
+
+#purchaseDeclineButton {
+    background-image: url("images/btn-not-buy.png");
+
+    /* ← 承諾との間隔 */
+    margin: 25px auto 0 auto;
+}

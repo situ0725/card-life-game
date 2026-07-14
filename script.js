@@ -1266,9 +1266,7 @@ function drawCards() {
         if (card.needCramSchool === true && !isCramSchool) return false;
         if (card.needCramSchool === false && isCramSchool) return false;
 
-
-        if (card.needCar === true && !hasCar) return false;
-        if (card.needHouse === true && !hasHouse) return false;
+        //　結婚状態
         if (card.needMarried === false && isMarried) return false;
         if (card.needMarried === true && !isMarried) return false;
 
@@ -1280,9 +1278,11 @@ function drawCards() {
             return false;
         }
 
+        //車
         if (card.needCar === true && !hasCar) return false;
         if (card.needCar === false && hasCar) return false;
 
+        //家
         if (card.needHouse === true && !hasHouse) return false;
         if (card.needHouse === false && hasHouse) return false;
 
@@ -1869,7 +1869,10 @@ function showPurchaseModal() {
 function acceptPurchase() {
     if (pendingPurchaseType === "car") {
         if (money < 1000000) {
+            pendingPurchaseType = "";
+            closePurchaseModal();
             showMoneyModal("車を買うお金が足りません。");
+            document.getElementById("nextButton").disabled = false;
             return;
         }
 
@@ -1880,7 +1883,10 @@ function acceptPurchase() {
 
     if (pendingPurchaseType === "house") {
         if (money < 5000000) {
+            pendingPurchaseType = "";
+            closePurchaseModal();
             showMoneyModal("家を買うお金が足りません。");
+            document.getElementById("nextButton").disabled = false;
             return;
         }
 
