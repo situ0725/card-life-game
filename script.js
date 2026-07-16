@@ -66,6 +66,7 @@ const cardList15 = [
         name: "定期テスト",
         icon: "📖",
         text: "テスト勉強の成果が出た。",
+        type: "work",
         effect: () => {
             study += 5;
             mental -= 3;
@@ -76,6 +77,7 @@ const cardList15 = [
         name: "テスト勉強",
         icon: "✏️",
         text: "テストに向けて一生懸命勉強した。",
+        type: "work",
         effect: () => {
             study += 4;
             mental -= 3;
@@ -86,6 +88,7 @@ const cardList15 = [
         name: "授業をサボった",
         icon: "😴",
         text: "授業をサボってしまった。",
+        type: "work",
         effect: () => {
             study -= 6;
             mental += 2;
@@ -97,6 +100,7 @@ const cardList15 = [
         name: "友達と勉強した",
         icon: "👨‍🏫",
         text: "友達と一緒に勉強して理解が深まった。",
+        type: "event",
         effect: () => {
             study += 3;
             mental += 3;
@@ -108,6 +112,7 @@ const cardList15 = [
         name: "塾に通い始めた",
         icon: "🏫",
         text: "塾に通い始めた。これから毎月、学力が上がる。",
+        type: "event",
         needCramSchool: false,
         effect: () => {
             isCramSchool = true;
@@ -118,6 +123,7 @@ const cardList15 = [
         name: "塾をやめた",
         icon: "🚪",
         text: "塾をやめた。毎月の学力アップが止まった。",
+        type: "event",
         needCramSchool: true,
         effect: () => {
             isCramSchool = false;
@@ -131,6 +137,7 @@ const cardList15 = [
         name: "風邪",
         icon: "🤒",
         text: "風邪をひいてしまった。",
+        type: "event",
         effect: () => {
             health -= 10;
             study -= 3;
@@ -141,6 +148,7 @@ const cardList15 = [
         name: "運動",
         icon: "🏃",
         text: "体を動かして健康になった。",
+        type: "event",
         effect: () => {
             health += 10;
             study -= 2;
@@ -153,6 +161,7 @@ const cardList15 = [
         name: "お小遣い",
         icon: "💴",
         text: "お小遣いをもらった。",
+        type: "event",
         effect: () => {
             money += 1000;
             study -= 1;
@@ -166,6 +175,7 @@ const cardList15 = [
         name: "ラッキー",
         icon: "🍀",
         text: "今日はいいことがあった。",
+        type: "event",
         effect: () => {
             luck += 10;
             study += 2;
@@ -177,6 +187,7 @@ const cardList15 = [
         name: "アンラッキー",
         icon: "☠️",
         text: "今日はついていなかった。",
+        type: "event",
         effect: () => {
             luck -= 10;
             study -= 2;
@@ -189,6 +200,7 @@ const cardList15 = [
         name: "恋人ができた",
         icon: "❤️",
         text: "幸運に恵まれ、恋人ができた。",
+        type: "event",
         minLuck: 70,
         needPartner: false,
         effect: () => {
@@ -202,6 +214,7 @@ const cardList15 = [
         name: "デート",
         icon: "💕",
         text: "恋人とデートをした。",
+        type: "event",
         needPartner: true,
         effect: () => {
 
@@ -222,6 +235,7 @@ const cardList15 = [
         name: "すれ違いで別れた",
         icon: "💔",
         text: "すれ違いが続き、恋人と別れてしまった。",
+        type: "event",
         needPartner: true,
         maxLuck: 30,
         effect: () => {
@@ -235,6 +249,7 @@ const cardList15 = [
         name: "お金がなくて別れた",
         icon: "💸",
         text: "デート代を出せず、恋人と別れてしまった。",
+        type: "event",
         needPartner: true,
         maxMoney: 0,
         effect: () => {
@@ -248,6 +263,7 @@ const cardList15 = [
         name: "精神的に余裕がなく別れた",
         icon: "😢",
         text: "精神的に余裕がなくなり、恋人と別れてしまった。",
+        type: "event",
         needPartner: true,
         maxMental: 20,
         effect: () => {
@@ -261,6 +277,7 @@ const cardList15 = [
         name: "友達と遊びに行く",
         icon: "🎡",
         text: "友達と遊びに行って気分転換した。",
+        type: "event",
         effect: () => {
 
              if (money < 2000) {
@@ -281,6 +298,7 @@ const cardList15 = [
         name: "趣味にお金を使う",
         icon: "🎮",
         text: "趣味にお金を使ってリフレッシュした。",
+        type: "event",
         effect: () => {
 
              if (money < 3000) {
@@ -301,6 +319,7 @@ const cardList15 = [
         name: "外食する",
         icon: "🍜",
         text: "友達と外食して楽しい時間を過ごした。",
+        type: "event",
         effect: () => {
 
              if (money < 1500) {
@@ -321,6 +340,7 @@ const cardList15 = [
         name: "買い物を楽しむ",
         icon: "🛍️",
         text: "欲しかった物を買って気分が上がった。",
+        type: "event",
         effect: () => {
              if (money < 5000) {
                 showMoneyModal("お金が足りず、諦めた。");
@@ -346,6 +366,7 @@ const cardList16to17 = [
         icon: "🍔",
         text: "アルバイトを始めた。これからカードを引くたびにお金が増える。",
         needPartTime: false,
+        type: "event",
         effect: () => {
             isPartTimeWorking = true;
             mental -= 3;
@@ -356,6 +377,7 @@ const cardList16to17 = [
         icon: "🚪",
         text: "アルバイトを辞めた。毎ターンの収入が止まった。",
         needPartTime: true,
+        type: "event",
         effect: () => {
             isPartTimeWorking = false;
             mental += 5;
@@ -365,6 +387,7 @@ const cardList16to17 = [
         name: "選択肢が増えた",
         icon: "🃏",
         text: "次のターンは4枚のカードから選べる。",
+        type: "event",
         effect: () => {
             nextCardCount = 4;
         }
@@ -377,6 +400,7 @@ const cardListUniversity = [
         name: "講義に出席",
         icon: "📚",
         text: "大学の講義を受けた。",
+        type: "work",
         effect: () => {
             
             mental -= 5;
@@ -388,6 +412,7 @@ const cardListUniversity = [
         name: "サークル活動",
         icon: "🎸",
         text: "サークル活動を楽しんだ。",
+        type: "work",
         effect: () => {
 
              if (money < 10000) {
@@ -407,6 +432,7 @@ const cardListUniversity = [
         icon: "🍔",
         text: "大学生活の合間にアルバイトを始めた。",
         needPartTime: false,
+        type: "event",
         effect: () => {
             isPartTimeWorking = true;
             mental -= 3;
@@ -419,6 +445,7 @@ const cardListUniversity = [
         icon: "🚪",
         text: "アルバイトを辞めた。毎ターンの収入が止まった。",
         needPartTime: true,
+        type: "event",
         effect: () => {
             isPartTimeWorking = false;
             mental += 5;
@@ -429,6 +456,7 @@ const cardListUniversity = [
         name: "単位を落とした",
         icon: "😱",
         text: "単位を落としてしまった。",
+        type: "work",
         effect: () => {
             mental -= 5;
             study -= 5;
@@ -439,6 +467,7 @@ const cardListUniversity = [
         name: "友達と旅行",
         icon: "✈️",
         text: "友達と旅行へ行き、リフレッシュした。",
+        type: "event",
         effect: () => {
 
              if (money < 25000) {
@@ -459,6 +488,7 @@ const cardListUniversity = [
         name: "温泉旅行",
         icon: "♨️",
         text: "温泉で心も体も癒された。",
+        type: "event",
         effect: () => {
 
              if (money < 25000) {
@@ -479,6 +509,7 @@ const cardListUniversity = [
         name: "ジム通い",
         icon: "🏋️",
         text: "運動習慣が身についた。",
+        type: "event",
         effect: () => {
 
              if (money < 10000) {
@@ -499,6 +530,7 @@ const cardListUniversity = [
         name: "実家に帰省",
         icon: "🏠",
         text: "家族と過ごして元気になった。",
+        type: "event",
         effect: () => {
 
              if (money < 25000) {
@@ -519,6 +551,7 @@ const cardListUniversity = [
         name: "趣味に没頭",
         icon: "🎮",
         text: "趣味を楽しんでリフレッシュした。",
+        type: "event",
         effect: () => {
 
              if (money < 10000) {
@@ -538,6 +571,7 @@ const cardListUniversity = [
         name: "十分な睡眠",
         icon: "😴",
         text: "しっかり休んで疲れが取れた。",
+        type: "event",
         effect: () => {
             health += 5;
             mental += 5;
@@ -550,6 +584,7 @@ const cardListUniversity = [
         name: "健康診断",
         icon: "🩺",
         text: "健康状態は良好だった。",
+        type: "event",
         effect: () => {
             health += 5;
             
@@ -561,6 +596,7 @@ const cardListUniversity = [
         icon: "💕",
         text: "恋人と楽しい時間を過ごした。",
         needPartner: true,
+        type: "event",
         effect: () => {
             if (money >= 5000) {
                 money -= 5000;
@@ -577,6 +613,7 @@ const cardListUniversity = [
         name: "資格取得",
         icon: "📜",
         text: "資格試験に合格した。",
+        type: "work",
         effect: () => {
             
             mental += 5;
@@ -588,6 +625,7 @@ const cardListUniversity = [
         name: "インターン",
         icon: "💼",
         text: "インターンで社会経験を積んだ。",
+        type: "work",
         effect: () => {
             
             mental += 3;
@@ -599,6 +637,7 @@ const cardListUniversity = [
         name: "友達と遊びに行く",
         icon: "🎡",
         text: "友達と遊びに行って気分転換した。",
+        type: "event",
         effect: () => {
 
              if (money < 2000) {
@@ -618,6 +657,7 @@ const cardListUniversity = [
         name: "趣味にお金を使う",
         icon: "🎮",
         text: "趣味にお金を使ってリフレッシュした。",
+        type: "event",
         effect: () => {
 
              if (money < 3000) {
@@ -637,6 +677,7 @@ const cardListUniversity = [
         name: "外食する",
         icon: "🍜",
         text: "友達と外食して楽しい時間を過ごした。",
+        type: "event",
         effect: () => {
 
              if (money < 100) {
@@ -656,6 +697,7 @@ const cardListUniversity = [
         name: "買い物を楽しむ",
         icon: "🛍️",
         text: "欲しかった物を買って気分が上がった。",
+        type: "event",
         effect: () => {
 
              if (money < 5000) {
@@ -676,6 +718,7 @@ const cardListUniversity = [
         name: "レポート提出漏れ",
         icon: "📄",
         text: "レポートの提出期限を忘れてしまった。",
+        type: "work",
         effect: () => {
         
             mental -= 5;
@@ -688,6 +731,7 @@ const cardListUniversity = [
         name: "寝坊",
         icon: "⏰",
         text: "寝坊して講義に遅刻してしまった。",
+        type: "event",
         effect: () => {
             study -= 2;
             mental -= 3;
@@ -699,6 +743,7 @@ const cardListUniversity = [
         name: "自主休校",
         icon: "🛌",
         text: "今日は講義を休んでしまった。",
+        type: "work",
         effect: () => {
             study -= 2;
             luck -= 2;
@@ -711,6 +756,7 @@ const cardListUniversity = [
         name: "風邪",
          icon: "🤒",
         text: "風邪をひいてしまった。",
+        type: "event",
         effect: () => {
             health -= 10;
             mental -= 10;
@@ -722,6 +768,7 @@ const cardListUniversity = [
         name: "単位を取った",
         icon: "✅",
         text: "無事に単位を取得した。",
+        type: "work",
         effect: () => {
             study += 10;
             mental += 5;
@@ -733,6 +780,7 @@ const cardListUniversity = [
         name: "ゼミに出席した",
         icon: "👨‍🏫",
         text: "ゼミで先生や仲間と議論し、知識が深まった。",
+        type: "work",
         effect: () => {
             study += 4;
             mental += 2;
@@ -747,6 +795,7 @@ const cardListDroppedOut = [
         name: "アルバイトを始めた",
         icon: "🍔",
         text: "アルバイトを始めた。",
+        type: "work",
         needPartTime: false,
         effect: () => {
             isPartTimeWorking = true;
@@ -759,6 +808,7 @@ const cardListDroppedOut = [
         icon: "🚪",
         text: "アルバイトを辞めた。",
         needPartTime: true,
+        type: "work",
         effect: () => {
             isPartTimeWorking = false;
             mental += 5;
@@ -768,6 +818,7 @@ const cardListDroppedOut = [
         name: "日雇い仕事",
         icon: "💴",
         text: "日雇い仕事でお金を稼いだ。",
+        type: "work",
         effect: () => {
             money += 8000;
             health -= 2;
@@ -779,6 +830,7 @@ const cardListDroppedOut = [
         name: "十分な睡眠",
         icon: "😴",
         text: "しっかり眠って体調が回復した。",
+        type: "event",
         effect: () => {
             health += 8;
             mental += 5;
@@ -788,6 +840,7 @@ const cardListDroppedOut = [
         name: "趣味で気分転換",
         icon: "🎮",
         text: "趣味を楽しんで気分転換した。",
+        type: "event",
         effect: () => {
             mental += 8;
             luck += 3;
@@ -798,6 +851,7 @@ const cardListDroppedOut = [
         name: "将来への不安",
         icon: "🌧️",
         text: "将来への不安で気持ちが沈んだ。",
+        type: "event",
         effect: () => {
             mental -= 8;
         }
@@ -806,6 +860,7 @@ const cardListDroppedOut = [
         name: "就職活動を考える",
         icon: "📄",
         text: "そろそろ就職活動を考え始めた。",
+        type: "event",
         minLuck: 50,
         effect: () => {
             luck += 3;
@@ -821,6 +876,7 @@ const cardListDroppedOut = [
         name: "就職活動",
         icon: "📝",
         text: "正社員を目指して就職活動を始めた。",
+        type: "event",
         minMental: 30,
         effect: () => {
             isJobHunting = true;
@@ -836,6 +892,7 @@ const cardListJobHunting = [
         name: "面接成功",
         icon: "✅",
         text: "面接で好印象を残せた。",
+        type: "event",
         effect: () => {
             interviewStage++;
 
@@ -852,6 +909,7 @@ const cardListJobHunting = [
         name: "面接失敗",
         icon: "❌",
         text: "面接でうまく話せなかった。",
+        type: "event",
         effect: () => {
             mental -= 5;
             luck -= 5;
@@ -867,6 +925,7 @@ const cardListCompany = [
         name: "仕事を頑張った",
         icon: "💼",
         text: "仕事を頑張り、会社での評価が上がった。",
+        type: "work",
         effect: () => {
             contribution += 10;
             mental -= 3;
@@ -876,6 +935,7 @@ const cardListCompany = [
         name: "仕事でミス",
         icon: "😱",
         text: "仕事でミスをして評価が下がった。",
+        type: "work",
         effect: () => {
             contribution -= 10;
             mental -= 5;
@@ -885,6 +945,7 @@ const cardListCompany = [
         name: "上司に褒められた",
         icon: "👏",
         text: "上司に褒められ、やる気が出た。",
+        type: "work",
         effect: () => {
             contribution += 8;
             mental += 5;
@@ -895,6 +956,7 @@ const cardListCompany = [
         name: "残業",
         icon: "🌙",
         text: "残業して仕事を片付けた。",
+        type: "work",
         effect: () => {
             contribution += 6;
             mental -= 5;
@@ -906,6 +968,7 @@ const cardListCompany = [
         name: "帰省",
         icon: "🏡",
         text: "久しぶりに実家へ帰省し、家族と過ごした。",
+        type: "event",
         effect: () => {
 
             if (money < 30000) {
@@ -924,6 +987,7 @@ const cardListCompany = [
         name: "趣味に没頭",
         icon: "🎮",
         text: "休日に趣味へ没頭し、気分転換した。",
+        type: "event",
         effect: () => {
 
             if (money < 20000) {
@@ -941,6 +1005,7 @@ const cardListCompany = [
         name: "健康診断",
         icon: "🩺",
         text: "健康診断を受け、体の状態を確認した。",
+        type: "work",
 
         effect: () => {
             if (money < 10000) {
@@ -957,7 +1022,7 @@ const cardListCompany = [
         name: "友達と遊ぶ",
         icon: "🍻",
         text: "友達と遊び、楽しい時間を過ごした。",
-
+        type: "event",
         effect: () => {
 
             if (money < 15000) {
@@ -975,6 +1040,7 @@ const cardListCompany = [
         name: "ジムに通う",
         icon: "🏋️",
         text: "ジムで体を鍛え、健康的な生活を送った。",
+        type: "event",
 
         effect: () => {
 
@@ -993,7 +1059,7 @@ const cardListCompany = [
         name: "旅行に行く",
         icon: "✈️",
         text: "旅行へ出かけ、心も体もリフレッシュした。",
-
+        type: "event",
         effect: () => {
 
             if (money < 50000) {
@@ -1012,6 +1078,7 @@ const cardListCompany = [
         name: "車を売却する",
         icon: "🚗",
         text: "車の売却を考えた。",
+        type: "event",
         needCar: true,
         effect: () => {
             carSaleEvent = false;
@@ -1024,6 +1091,7 @@ const cardListCompany = [
         name: "家を売却する",
         icon: "🏠",
         text: "家の売却を考えた。",
+        type: "event",
         needHouse: true,
         effect: () => {
             houseSaleEvent = false;
@@ -1037,6 +1105,7 @@ const cardListCompany = [
         name: "結婚",
         icon: "💍",
         text: "交際から2年が経ち、結婚した。",
+        type: "event",
 
         needCar: true,
         needHouse: true,
@@ -1056,7 +1125,7 @@ const cardListCompany = [
         name: "離婚",
         icon: "💔",
         text: "夫婦関係が悪化し、離婚してしまった。",
-
+        type: "event",
         needMarried: true,
         maxLuck: 30,
 
@@ -1077,7 +1146,7 @@ const cardListCompany = [
         name: "交際を始める",
         icon: "❤️",
         text: "新しい相手と交際を始めた。",
-
+        type: "event",
         needPartner: false,
         needMarried: false,
 
@@ -1094,6 +1163,7 @@ const cardListCompany = [
         name: "すれ違い",
         icon: "💔",
         text: "すれ違いが続き、別れてしまった。",
+        type: "event",
 
         needPartner: true,
         needMarried: false,
@@ -1112,7 +1182,7 @@ const cardListCompany = [
         name: "心の余裕がなく別れた",
         icon: "😢",
         text: "精神的な余裕がなく、別れてしまった。",
-
+        type: "event",
         needPartner: true,
         needMarried: false,
         maxMental: 20,
@@ -1132,6 +1202,7 @@ const changeJobCard = {
     name: "転職活動",
     icon: "🔄",
     text: "より良い会社を目指して転職活動を始めた。",
+    type: "event",
     effect: () => {
 
         showChangeJobModal();
@@ -1435,19 +1506,32 @@ function drawCards() {
     selected = false;
 
     const cardsArea = document.getElementById("cards");
-    cardsArea.innerHTML = "";
+        cardsArea.innerHTML = "";
 
-    currentCards.forEach((card, index) => {
+        currentCards.forEach((card, index) => {
 
-        const div = document.createElement("div");
+            const div = document.createElement("div");
 
-        div.className = "card back";
-        div.textContent = "🂠";
+            div.className = "card back";
 
-        div.onclick = () => selectCard(index);
+            // カードの種類によって裏面を変更
+            let cardBackImage = "images/card-back.png";
 
-        cardsArea.appendChild(div);
-    });
+            if (card.type === "event") {
+                cardBackImage = "images/card_back_event_red.png";
+            }
+
+            div.style.backgroundImage = `url(${cardBackImage})`;
+            div.style.backgroundRepeat = "no-repeat";
+            div.style.backgroundPosition = "center";
+            div.style.backgroundSize = "cover";
+
+            div.textContent = "";
+
+            div.onclick = () => selectCard(index);
+
+            cardsArea.appendChild(div);
+        });
 
     document.getElementById("message").textContent =
         "裏向きのカードを1枚選んでください。";
@@ -1531,6 +1615,11 @@ function selectCard(index) {
 
         if (i === index) {
             el.className = "card open";
+
+            el.style.backgroundImage = "none";
+            el.style.backgroundSize = "";
+            el.style.backgroundRepeat = "";
+            el.style.backgroundPosition = "";
 
             el.innerHTML = `
                 <div style="font-size:40px;">${card.icon}</div>

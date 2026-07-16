@@ -86,11 +86,13 @@ body {
     color: transparent;
     font-size: 0;
 }
+
 .card.open {
-  background: white;
-  color: #111827;
-  flex-direction: column;
-  padding: 10px;
+    background-color: white;
+    background-image: none !important;
+    color: #111827;
+    flex-direction: column;
+    padding: 10px;
 }
 
 .card.disabled {
@@ -306,31 +308,16 @@ button {
     z-index: 2;
 }
 
-#nextButton {
-    width: 340px;
-    height: 100px;
 
-    background: url("images/btn-next.png") center center no-repeat;
-    background-size: 100% 100%;
-
-    border: none;
-    outline: none;
-
-    color: transparent;
-    font-size: 0;
-
-    cursor: pointer;
-
-    display: block;
-    margin: 20px auto;
-}
-
-.game-buttons{
+.game-buttons {
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 0px;
-    margin-top: -10px;
+    gap: 20px;
+
+    margin: 20px auto 0;
+    clear: both;
 }
 
 #nextButton{
@@ -929,4 +916,18 @@ button {
 
 #saleDeclineButton {
     background-image: url("images/not_sell.png");
+}
+
+.card.normal-back{
+    background-image: url("images/card-back.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.card.event-back{
+    background-image: url("images/card_back_event_red.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 }
