@@ -988,3 +988,42 @@ button {
 #changeJobNoButton {
     background-image: url("images/btn-no.png");
 }
+
+/* ===== 転職確認モーダル ===== */
+
+
+.change-job-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
+    margin: 0;
+}
+
+#changeJobYesButton,
+#changeJobNoButton {
+    flex: 0 0 220px;
+
+    width: 220px;
+    height: 70px;
+    margin: 0 !important;
+
+    border: none;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+}
+
+#changeJobYesButton {
+    background-image: url("images/change_job.png");
+}
+
+#changeJobNoButton {
+    background-image: url("images/not_change_job.png");
+}

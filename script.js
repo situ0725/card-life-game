@@ -15,6 +15,8 @@ let currentCards = [];
 let selected = false;
 let nextCardCount = 3;
 
+let selectedCount = 0;
+
 let droppedOut = false;
 
 let universityRank = ""; // elite / normal / low
@@ -1600,6 +1602,9 @@ function noJobCard() {
 
 function drawCards() {
 
+    selected = false;
+    selectedCount = 0;
+
     currentCards = [];
 
     let availableCards = [];
@@ -1610,19 +1615,27 @@ function drawCards() {
         availableCards = [...cardListJobHunting];
         nextCardCount = 2;
     }
-    else if (isWorking) {
+    else if (isWorking && !isJobHunting) {
         availableCards = [...cardListCompany];
 
-        // 12月だけ転職カードを候補に追加
+        // 12月だけ転職カードを追加
         if (month === 12) {
             availableCards.push(changeJobCard);
         }
 
-        // 所持金10万円ごとにカードを1枚追加（最大6枚）
-       
-        const positionBonusCards = getPositionCardBonus();
+        // 所持金10万円ごとに1枚追加
+        const moneyBonusCards =
+            Math.floor(Math.max(0, money) / 1000000);
 
-        nextCardCount = 3 + positionBonusCards;
+        // 役職による追加枚数
+        const positionBonusCards =
+            getCompanyCardCount();
+
+        // 基本3枚＋所持金＋役職、最大6枚
+        nextCardCount = Math.min(
+            6,
+            3 + moneyBonusCards + positionBonusCards
+        );
     }
     else if (droppedOut) {
         availableCards = [...cardListDroppedOut];
@@ -1797,9 +1810,16 @@ function drawCards() {
 
 function selectCard(index) {
 
-    if (selected) return;
+    const maxSelections = isWorking
+        ? getMaxSelectionsPerTurn()
+        : 1;
+
+    if (selectedCount >= maxSelections) {
+        return;
+    }
 
     const card = currentCards[index];
+    
     if (!card) {
         selected = false;
         drawCards();
@@ -1808,7 +1828,14 @@ function selectCard(index) {
 
     playCardFlipSe();
 
-    selected = true;
+    selectedCount++;
+
+    const selectedCardElement =
+        document.querySelectorAll(".card")[index];
+
+    if (selectedCardElement) {
+        selectedCardElement.style.pointerEvents = "none";
+    }
 
     let extraMessage = "";
     const cardName = card.name;
@@ -1926,7 +1953,22 @@ function selectCard(index) {
 
     document.getElementById("message").textContent =
         displayText + extraMessage + " 『次を引く』を押して次のカードへ進みます。";
-    document.getElementById("nextButton").disabled = false;
+    
+    if (selectedCount >= maxSelections) {
+        selected = true;
+
+        document.getElementById("nextButton").disabled = false;
+
+        document.getElementById("message").textContent +=
+            ` このターンは${selectedCount}枚選びました。`;
+    } else {
+        selected = false;
+
+        document.getElementById("nextButton").disabled = true;
+
+        document.getElementById("message").textContent +=
+            ` あと${maxSelections - selectedCount}枚選べます。`;
+    }
 }
 
 function nextTurn() {
@@ -2167,7 +2209,12 @@ function closeLivingCostModal() {
         .getElementById("livingCostModal")
         .classList.add("hidden");
 
-    document.getElementById("nextButton").disabled = false;
+    selected = false;
+
+    const nextButton =
+        document.getElementById("nextButton");
+
+    nextButton.disabled = false;
 }
 
 function restartGame() {
@@ -2288,9 +2335,13 @@ function acceptJobOffer() {
 
     updateStatus();
 
+    selected = false;
+
+    drawCards();   // ←追加
+
     document.getElementById("nextButton").disabled = false;
 
-    // 初就職時だけ生活費説明を表示
+    // 初就職時だけ社会人生活を表示
     if (
         !wasWorking &&
         !wasChangingJob &&
@@ -2337,40 +2388,6 @@ function declineJobOffer() {
 
 function closePurchaseModal() {
     document.getElementById("purchaseModal").classList.add("hidden");
-}
-
-function showChangeJobModal(){
-
-    pendingChangeJob = true;
-
-    document.getElementById("changeJobModal").classList.remove("hidden");
-
-    document.getElementById("nextButton").disabled = true;
-}
-
-function acceptChangeJob(){
-
-    isJobHunting = true;
-    isChangingJob = true;
-
-    pendingChangeJob = false;
-
-    closeChangeJobModal();
-
-    updateStatus();
-
-    document.getElementById("nextButton").disabled = false;
-}
-
-function declineChangeJob(){
-
-    pendingChangeJob = false;
-
-    closeChangeJobModal();
-
-    updateStatus();
-
-    document.getElementById("nextButton").disabled = false;
 }
 
 function closeChangeJobModal(){
@@ -2494,6 +2511,24 @@ function getCompanyCardCount() {
     }
 }
 
+function getMaxSelectionsPerTurn() {
+    switch (position) {
+        case "部長":
+        case "役員":
+        case "社長":
+            return 3;
+
+        case "係長":
+        case "課長":
+            return 2;
+
+        case "一般社員":
+        case "主任":
+        default:
+            return 1;
+    }
+}
+
 function acceptChangeJob() {
     document
         .getElementById("changeJobModal")
@@ -2514,9 +2549,12 @@ function acceptChangeJob() {
     document.getElementById("message").textContent =
         "転職活動を始めました。";
 
-    updateStatus();
+    selected = false;
 
-    document.getElementById("nextButton").disabled = false;
+    updateStatus();
+    drawCards();
+
+    document.getElementById("nextButton").disabled = true;
 }
 
 function declineChangeJob() {
