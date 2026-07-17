@@ -212,8 +212,37 @@
 
                 <p id="jobOfferText">会社から内定が出ました。</p>
 
+            <div class="job-offer-buttons">
                 <button id="acceptJobButton" onclick="acceptJobOffer()">承諾</button>
                 <button id="declineJobButton" onclick="declineJobOffer()">辞退</button>
+            </div>
+        </div>
+
+        <div id="changeJobModal" class="modal hidden">
+            <div class="modal-content">
+
+                <h2>転職活動</h2>
+
+                <p>
+                    現在の会社を離れ、転職活動を始めますか？
+                </p>
+
+                <div class="change-job-buttons">
+                    <button
+                        id="changeJobYesButton"
+                        onclick="acceptChangeJob()"
+                    >
+                        はい
+                    </button>
+
+                    <button
+                        id="changeJobNoButton"
+                        onclick="declineChangeJob()"
+                    >
+                        いいえ
+                    </button>
+                </div>
+
             </div>
         </div>
 

@@ -53,9 +53,286 @@ let relationshipMonths = 0;
 
 let pendingChangeJob = false;
 
+let currentCompanyId = "";
+let pendingCompanyId = "";
+
 const maxJobHuntingTurn = 3;
 
+const companyList = [
 
+    // =========================
+    // 小規模企業
+    // =========================
+
+    {
+        id: "small_bad",
+        name: "小規模ブラック企業",
+        size: "小規模",
+        reputation: "悪い",
+        salary: 160000,
+        monthlyMentalCost: 8,
+        badCardRate: 0.75,
+        goodCardRate: 0.10,
+        promotionRate: 1.20,
+        offerWeight: 35,
+        description:
+            "給料は低いが昇進しやすい。叱責や残業が非常に多い会社。"
+    },
+
+    {
+        id: "small_normal",
+        name: "小規模一般企業",
+        size: "小規模",
+        reputation: "普通",
+        salary: 180000,
+        monthlyMentalCost: 3,
+        badCardRate: 0.30,
+        goodCardRate: 0.30,
+        promotionRate: 1.10,
+        offerWeight: 30,
+        description:
+            "給料や労働環境が標準的で、比較的昇進しやすい会社。"
+    },
+
+    {
+        id: "small_good",
+        name: "小規模優良企業",
+        size: "小規模",
+        reputation: "良い",
+        salary: 200000,
+        monthlyMentalCost: 1,
+        badCardRate: 0.10,
+        goodCardRate: 0.70,
+        promotionRate: 1.15,
+        offerWeight: 12,
+        description:
+            "規模は小さいが働きやすく、社員が評価されやすい会社。"
+    },
+
+    // =========================
+    // 中堅企業
+    // =========================
+
+    {
+        id: "middle_bad",
+        name: "中堅ブラック企業",
+        size: "中堅",
+        reputation: "悪い",
+        salary: 220000,
+        monthlyMentalCost: 7,
+        badCardRate: 0.65,
+        goodCardRate: 0.15,
+        promotionRate: 1.10,
+        offerWeight: 22,
+        description:
+            "給料は少し高いが、残業や休日出勤が多い会社。"
+    },
+
+    {
+        id: "middle_normal",
+        name: "中堅一般企業",
+        size: "中堅",
+        reputation: "普通",
+        salary: 250000,
+        monthlyMentalCost: 3,
+        badCardRate: 0.30,
+        goodCardRate: 0.40,
+        promotionRate: 1.00,
+        offerWeight: 18,
+        description:
+            "給料と働きやすさのバランスが取れた会社。"
+    },
+
+    {
+        id: "middle_good",
+        name: "中堅優良企業",
+        size: "中堅",
+        reputation: "良い",
+        salary: 280000,
+        monthlyMentalCost: 0,
+        badCardRate: 0.05,
+        goodCardRate: 0.80,
+        promotionRate: 1.05,
+        offerWeight: 8,
+        description:
+            "給料と労働環境の両方が良い人気企業。"
+    },
+
+    // =========================
+    // 大手企業
+    // =========================
+
+    {
+        id: "large_hard",
+        name: "大手激務企業",
+        size: "大手",
+        reputation: "悪い",
+        salary: 320000,
+        monthlyMentalCost: 6,
+        badCardRate: 0.55,
+        goodCardRate: 0.20,
+        promotionRate: 0.85,
+        offerWeight: 12,
+        description:
+            "高給だが競争が激しく、残業も非常に多い会社。"
+    },
+
+    {
+        id: "large_normal",
+        name: "大手一般企業",
+        size: "大手",
+        reputation: "普通",
+        salary: 350000,
+        monthlyMentalCost: 3,
+        badCardRate: 0.25,
+        goodCardRate: 0.45,
+        promotionRate: 0.80,
+        offerWeight: 8,
+        description:
+            "安定した給料が魅力だが、昇進には時間がかかる会社。"
+    },
+
+    {
+        id: "large_good",
+        name: "大手優良企業",
+        size: "大手",
+        reputation: "良い",
+        salary: 380000,
+        monthlyMentalCost: -1,
+        badCardRate: 0.05,
+        goodCardRate: 0.85,
+        promotionRate: 0.70,
+        offerWeight: 3,
+        description:
+            "高給で働きやすいが、入社も昇進も非常に難しい会社。"
+    }
+];
+
+function getCurrentCompany() {
+    return companyList.find(
+        company => company.id === currentCompanyId
+    ) || null;
+}
+
+function getPendingCompany() {
+    return companyList.find(
+        company => company.id === pendingCompanyId
+    ) || null;
+}
+
+function selectRandomCompany() {
+
+    let candidates = companyList.filter(
+        company => company.id !== currentCompanyId
+    );
+
+    const weightedCompanies = [];
+
+    candidates.forEach(company => {
+
+        let weight = company.offerWeight;
+
+        // 幸運が低いと優良企業に入りにくい
+        if (
+            company.reputation === "良い" &&
+            luck < 40
+        ) {
+            weight = Math.max(
+                1,
+                Math.floor(weight / 4)
+            );
+        }
+
+        // 幸運が高いと優良企業が少し出やすい
+        if (
+            company.reputation === "良い" &&
+            luck >= 70
+        ) {
+            weight *= 2;
+        }
+
+        // 幸運が高いとブラック企業が少し出にくい
+        if (
+            company.reputation === "悪い" &&
+            luck >= 70
+        ) {
+            weight = Math.max(
+                1,
+                Math.floor(weight / 2)
+            );
+        }
+
+        for (let i = 0; i < weight; i++) {
+            weightedCompanies.push(company);
+        }
+    });
+
+    if (weightedCompanies.length === 0) {
+        weightedCompanies.push(...companyList);
+    }
+
+    const randomIndex =
+        Math.floor(Math.random() * weightedCompanies.length);
+
+    const selectedCompany =
+        weightedCompanies[randomIndex];
+
+    pendingCompanyId = selectedCompany.id;
+
+    return selectedCompany;
+}
+
+function createCompanyOffer() {
+
+    const company = selectRandomCompany();
+
+    if (!company) {
+        console.error("会社の抽選に失敗しました。");
+        return;
+    }
+
+    showCompanyOfferModal(company);
+}
+
+function showCompanyOfferModal(company) {
+
+    if (!company) {
+        return;
+    }
+
+    let mentalText = "";
+
+    if (company.monthlyMentalCost > 0) {
+        mentalText =
+            `毎月の精神負担：-${company.monthlyMentalCost}`;
+    }
+    else if (company.monthlyMentalCost < 0) {
+        mentalText =
+            `毎月の精神回復：+${Math.abs(company.monthlyMentalCost)}`;
+    }
+    else {
+        mentalText = "毎月の精神負担：なし";
+    }
+
+    document.getElementById("jobOfferText").innerHTML = `
+        <strong>${company.name}</strong><br><br>
+
+        規模：${company.size}<br>
+        評判：${company.reputation}<br>
+        給料：${company.salary.toLocaleString()}円<br>
+        ${mentalText}<br><br>
+
+        ${company.description}<br><br>
+
+        この会社に入社しますか？
+    `;
+
+    document
+        .getElementById("jobOfferModal")
+        .classList.remove("hidden");
+
+    document.getElementById("nextButton").disabled = true;
+}
 
 
 const cardList15 = [
@@ -112,7 +389,7 @@ const cardList15 = [
         name: "塾に通い始めた",
         icon: "🏫",
         text: "塾に通い始めた。これから毎月、学力が上がる。",
-        type: "event",
+        type: "destiny",
         needCramSchool: false,
         effect: () => {
             isCramSchool = true;
@@ -123,7 +400,7 @@ const cardList15 = [
         name: "塾をやめた",
         icon: "🚪",
         text: "塾をやめた。毎月の学力アップが止まった。",
-        type: "event",
+        type: "destiny",
         needCramSchool: true,
         effect: () => {
             isCramSchool = false;
@@ -200,7 +477,7 @@ const cardList15 = [
         name: "恋人ができた",
         icon: "❤️",
         text: "幸運に恵まれ、恋人ができた。",
-        type: "event",
+        type: "destiny",
         minLuck: 70,
         needPartner: false,
         effect: () => {
@@ -235,7 +512,7 @@ const cardList15 = [
         name: "すれ違いで別れた",
         icon: "💔",
         text: "すれ違いが続き、恋人と別れてしまった。",
-        type: "event",
+        type: "destiny",
         needPartner: true,
         maxLuck: 30,
         effect: () => {
@@ -249,7 +526,7 @@ const cardList15 = [
         name: "お金がなくて別れた",
         icon: "💸",
         text: "デート代を出せず、恋人と別れてしまった。",
-        type: "event",
+        type: "destiny",
         needPartner: true,
         maxMoney: 0,
         effect: () => {
@@ -263,7 +540,7 @@ const cardList15 = [
         name: "精神的に余裕がなく別れた",
         icon: "😢",
         text: "精神的に余裕がなくなり、恋人と別れてしまった。",
-        type: "event",
+        type: "destiny",
         needPartner: true,
         maxMental: 20,
         effect: () => {
@@ -366,7 +643,7 @@ const cardList16to17 = [
         icon: "🍔",
         text: "アルバイトを始めた。これからカードを引くたびにお金が増える。",
         needPartTime: false,
-        type: "event",
+        type: "destiny",
         effect: () => {
             isPartTimeWorking = true;
             mental -= 3;
@@ -377,7 +654,7 @@ const cardList16to17 = [
         icon: "🚪",
         text: "アルバイトを辞めた。毎ターンの収入が止まった。",
         needPartTime: true,
-        type: "event",
+        type: "destiny",
         effect: () => {
             isPartTimeWorking = false;
             mental += 5;
@@ -387,7 +664,7 @@ const cardList16to17 = [
         name: "選択肢が増えた",
         icon: "🃏",
         text: "次のターンは4枚のカードから選べる。",
-        type: "event",
+        type: "destiny",
         effect: () => {
             nextCardCount = 4;
         }
@@ -432,7 +709,7 @@ const cardListUniversity = [
         icon: "🍔",
         text: "大学生活の合間にアルバイトを始めた。",
         needPartTime: false,
-        type: "event",
+        type: "destiny",
         effect: () => {
             isPartTimeWorking = true;
             mental -= 3;
@@ -445,7 +722,7 @@ const cardListUniversity = [
         icon: "🚪",
         text: "アルバイトを辞めた。毎ターンの収入が止まった。",
         needPartTime: true,
-        type: "event",
+        type: "destiny",
         effect: () => {
             isPartTimeWorking = false;
             mental += 5;
@@ -860,7 +1137,7 @@ const cardListDroppedOut = [
         name: "就職活動を考える",
         icon: "📄",
         text: "そろそろ就職活動を考え始めた。",
-        type: "event",
+        type: "destiny",
         minLuck: 50,
         effect: () => {
             luck += 3;
@@ -876,7 +1153,7 @@ const cardListDroppedOut = [
         name: "就職活動",
         icon: "📝",
         text: "正社員を目指して就職活動を始めた。",
-        type: "event",
+        type: "destiny",
         minMental: 30,
         effect: () => {
             isJobHunting = true;
@@ -1078,7 +1355,7 @@ const cardListCompany = [
         name: "車を売却する",
         icon: "🚗",
         text: "車の売却を考えた。",
-        type: "event",
+        type: "destiny",
         needCar: true,
         effect: () => {
             carSaleEvent = false;
@@ -1091,7 +1368,7 @@ const cardListCompany = [
         name: "家を売却する",
         icon: "🏠",
         text: "家の売却を考えた。",
-        type: "event",
+        type: "destiny",
         needHouse: true,
         effect: () => {
             houseSaleEvent = false;
@@ -1105,7 +1382,7 @@ const cardListCompany = [
         name: "結婚",
         icon: "💍",
         text: "交際から2年が経ち、結婚した。",
-        type: "event",
+        type: "destiny",
 
         needCar: true,
         needHouse: true,
@@ -1125,7 +1402,7 @@ const cardListCompany = [
         name: "離婚",
         icon: "💔",
         text: "夫婦関係が悪化し、離婚してしまった。",
-        type: "event",
+        type: "destiny",
         needMarried: true,
         maxLuck: 30,
 
@@ -1146,7 +1423,7 @@ const cardListCompany = [
         name: "交際を始める",
         icon: "❤️",
         text: "新しい相手と交際を始めた。",
-        type: "event",
+        type: "destiny",
         needPartner: false,
         needMarried: false,
 
@@ -1163,7 +1440,7 @@ const cardListCompany = [
         name: "すれ違い",
         icon: "💔",
         text: "すれ違いが続き、別れてしまった。",
-        type: "event",
+        type: "destiny",
 
         needPartner: true,
         needMarried: false,
@@ -1182,7 +1459,7 @@ const cardListCompany = [
         name: "心の余裕がなく別れた",
         icon: "😢",
         text: "精神的な余裕がなく、別れてしまった。",
-        type: "event",
+        type: "destiny",
         needPartner: true,
         needMarried: false,
         maxMental: 20,
@@ -1199,14 +1476,13 @@ const cardListCompany = [
 ];
 
 const changeJobCard = {
-    name: "転職活動",
+    name: "転職を考える",
     icon: "🔄",
-    text: "より良い会社を目指して転職活動を始めた。",
-    type: "event",
+    text: "現在の会社を辞めて、新しい会社を探すか考えた。",
+    type: "destiny",
+
     effect: () => {
-
         showChangeJobModal();
-
     }
 };
 
@@ -1253,86 +1529,56 @@ function getUniversityCard() {
 
 function getJobCard() {
 
-    // 幸運0なら大学ランクに関係なく就職失敗
+    // 幸運0なら就職失敗
     if (luck <= 0) {
         return noJobCard();
     }
 
+    // 就職できるかどうかの基本判定
+    let successRate = 0;
+
     // 名門大学
     if (universityRank === "elite") {
-        if (study >= 80 && luck >= 70) return bigCompanyCard();
-        if (study >= 60 && luck >= 40) return middleCompanyCard();
-        if (study >= 40 && luck >= 20) return smallCompanyCard();
-        return noJobCard();
+        successRate = 85;
     }
 
     // 普通大学
-    if (universityRank === "normal") {
-        if (study >= 85 && luck >= 80) return bigCompanyCard();
-        if (study >= 60 && luck >= 50) return middleCompanyCard();
-        if (study >= 40 && luck >= 20) return smallCompanyCard();
-        return noJobCard();
+    else if (universityRank === "normal") {
+        successRate = 65;
     }
 
     // Fラン大学
-    if (universityRank === "low") {
-        if (study >= 90 && luck >= 90) return middleCompanyCard();
-        if (study >= 50 && luck >= 40) return smallCompanyCard();
+    else if (universityRank === "low") {
+        successRate = 45;
+    }
+
+    // 学力による補正
+    successRate += Math.floor(study / 5);
+
+    // 幸運による補正
+    successRate += Math.floor(luck / 10);
+
+    // 最大95％
+    successRate = Math.min(95, successRate);
+
+    const randomNumber = Math.random() * 100;
+
+    if (randomNumber > successRate) {
         return noJobCard();
     }
 
-    return noJobCard();
+    return companyOfferCard();
 }
 
-function bigCompanyCard() {
+function companyOfferCard() {
     return {
-        name: "大手企業に就職",
-        icon: "🏢",
-        text: "大手企業への就職が決まった。",
+        name: "会社から内定",
+        icon: "💼",
+        text: "就職活動の結果、会社から内定の連絡が届いた。",
+        type: "destiny",
+
         effect: () => {
-            jobType = "big";
-            isWorking = true;
-
-            contribution = 50;
-            position = "一般社員";
-            salary = 30000;
-
-            mental += 15;
-            luck += 10;
-        }
-    };
-}
-
-function middleCompanyCard() {
-    return {
-        name: "中堅企業に就職",
-        icon: "🏬",
-        text: "中堅企業への就職が決まった。",
-        effect: () => {
-            jobType = "middle";
-            isWorking = true;
-
-            contribution = 50;
-            position = "一般社員";
-            salary = 22000;
-        }
-    };
-}
-
-function smallCompanyCard() {
-    return {
-        name: "小さい会社に就職",
-        icon: "🏪",
-        text: "小さい会社に就職した。",
-        effect: () => {
-            jobType = "small";
-            isWorking = true;
-
-            contribution = 50;
-            position = "一般社員";
-            salary = 16000;
-
-            mental += 5;
+            createCompanyOffer();
         }
     };
 }
@@ -1342,6 +1588,7 @@ function noJobCard() {
         name: "就職できなかった",
         icon: "❌",
         text: "就職先が決まらなかった。",
+        type: "destiny",
         effect: () => {
             jobType = "none";
             mental -= 20;
@@ -1372,9 +1619,10 @@ function drawCards() {
         }
 
         // 所持金10万円ごとにカードを1枚追加（最大6枚）
-        const moneyBonusCards = Math.floor(Math.max(0, money) / 100000);
+       
+        const positionBonusCards = getPositionCardBonus();
 
-        nextCardCount = Math.min(6, 3 + moneyBonusCards);
+        nextCardCount = 3 + positionBonusCards;
     }
     else if (droppedOut) {
         availableCards = [...cardListDroppedOut];
@@ -1519,6 +1767,10 @@ function drawCards() {
 
             if (card.type === "event") {
                 cardBackImage = "images/card_back_event_red.png";
+            }
+
+            if (card.type === "destiny") {
+                cardBackImage = "images/card-back-destiny-silver.png";
             }
 
             div.style.backgroundImage = `url(${cardBackImage})`;
@@ -1911,8 +2163,11 @@ function showLivingCostModal() {
 }
 
 function closeLivingCostModal() {
-    document.getElementById("livingCostModal")
+    document
+        .getElementById("livingCostModal")
         .classList.add("hidden");
+
+    document.getElementById("nextButton").disabled = false;
 }
 
 function restartGame() {
@@ -1984,89 +2239,97 @@ function closeLoadModal() {
 }
 
 function createJobOffer() {
-
     isJobHunting = false;
     interviewStage = 0;
 
-    if (!isWorking) {
-        pendingJobOffer = "small";
-    } else if (jobType === "small") {
-        const offers = ["small", "middle"];
-        pendingJobOffer = offers[Math.floor(Math.random() * offers.length)];
-    } else if (jobType === "middle") {
-        const offers = ["small", "middle", "big"];
-        pendingJobOffer = offers[Math.floor(Math.random() * offers.length)];
-    } else {
-        const offers = ["middle", "big"];
-        pendingJobOffer = offers[Math.floor(Math.random() * offers.length)];
-    }
-
-    showJobOfferModal();
+    createCompanyOffer();
 }
 
-function showJobOfferModal() {
-
-    let companyName = "";
-
-    if (pendingJobOffer === "small") companyName = "小さい会社";
-    if (pendingJobOffer === "middle") companyName = "中堅企業";
-    if (pendingJobOffer === "big") companyName = "大企業";
-
-    document.getElementById("jobOfferText").textContent =
-        `${companyName}から内定が出ました。就職しますか？`;
-
-    document.getElementById("jobOfferModal").classList.remove("hidden");
-}
 
 function acceptJobOffer() {
 
-    document.getElementById("jobOfferModal").classList.add("hidden");
+    const company = getPendingCompany();
 
-    if (pendingJobOffer === "small") {
-        jobType = "small";
-        salary = 180000;
+    if (!company) {
+        console.error("内定会社が見つかりません。");
+        return;
     }
 
-    if (pendingJobOffer === "middle") {
-        jobType = "middle";
-        salary = 250000;
-    }
+    const wasWorking = isWorking;
+    const wasChangingJob = isChangingJob;
 
-    if (pendingJobOffer === "big") {
-        jobType = "big";
-        salary = 350000;
-    }
+    currentCompanyId = company.id;
 
     isWorking = true;
+    isJobHunting = false;
     isChangingJob = false;
+
+    salary = company.salary;
+
+    jobType = company.size;
+
+    // 転職すると役職は一般社員に戻る
     position = "一般社員";
-    contribution = 50;
-    pendingJobOffer = "";
+
+    // 貢献度を少し残す
+    contribution = 30;
+
+    interviewStage = 0;
+    jobHuntingTurn = 0;
+
+    document
+        .getElementById("jobOfferModal")
+        .classList.add("hidden");
+
+    document.getElementById("message").textContent =
+        `${company.name}に入社しました。`;
+
+    pendingCompanyId = "";
 
     updateStatus();
 
-    showLivingCostModal();
-
-    document.getElementById("message").textContent =
-        "就職が決まり、新しい生活が始まりました。";
-
     document.getElementById("nextButton").disabled = false;
+
+    // 初就職時だけ生活費説明を表示
+    if (
+        !wasWorking &&
+        !wasChangingJob &&
+        typeof showLivingCostModal === "function"
+    ) {
+        showLivingCostModal();
+    }
 }
 
 function declineJobOffer() {
 
-    document.getElementById("jobOfferModal").classList.add("hidden");
+    const company = getPendingCompany();
 
-    pendingJobOffer = "";
+    document
+        .getElementById("jobOfferModal")
+        .classList.add("hidden");
+
+    if (company) {
+        document.getElementById("message").textContent =
+            `${company.name}の内定を辞退しました。`;
+    }
+
+    pendingCompanyId = "";
+
+    isJobHunting = false;
     isChangingJob = false;
 
     mental -= 3;
     luck -= 2;
 
-    updateStatus();
+    if (mental < 0) {
+        mental = 0;
+    }
 
-    document.getElementById("message").textContent =
-        "内定を辞退しました。次の機会を待ちます。";
+    if (luck < 0) {
+        luck = 0;
+    }
+
+    updateStatus();
 
     document.getElementById("nextButton").disabled = false;
 }
@@ -2201,6 +2464,70 @@ function showSaleModal() {
     }
 
     document.getElementById("saleModal").classList.remove("hidden");
+}
+
+function showChangeJobModal() {
+    document
+        .getElementById("changeJobModal")
+        .classList.remove("hidden");
+
+    document.getElementById("nextButton").disabled = true;
+}
+
+function getCompanyCardCount() {
+
+    switch (position) {
+
+        case "部長":
+        case "役員":
+        case "社長":
+            return 3;
+
+        case "係長":
+        case "課長":
+            return 2;
+
+        case "主任":
+        case "一般社員":
+        default:
+            return 1;
+    }
+}
+
+function acceptChangeJob() {
+    document
+        .getElementById("changeJobModal")
+        .classList.add("hidden");
+
+    isChangingJob = true;
+    isJobHunting = true;
+
+    interviewStage = 0;
+    jobHuntingTurn = 0;
+
+    mental -= 5;
+
+    if (mental < 0) {
+        mental = 0;
+    }
+
+    document.getElementById("message").textContent =
+        "転職活動を始めました。";
+
+    updateStatus();
+
+    document.getElementById("nextButton").disabled = false;
+}
+
+function declineChangeJob() {
+    document
+        .getElementById("changeJobModal")
+        .classList.add("hidden");
+
+    document.getElementById("message").textContent =
+        "今の会社に残ることにしました。";
+
+    document.getElementById("nextButton").disabled = false;
 }
 
 function acceptSale() {
