@@ -355,7 +355,7 @@ button {
 
 #menuButton{
     background-image: url("images/btn-menu.png");
-    margin-left: 0px;
+    margin-left: 15px;
 }
 
 #nextButton{
@@ -364,6 +364,10 @@ button {
 
 #menuButton{
     background-image: url("images/btn-menu.png");
+}
+
+#menuModal #closeButton {
+    margin-top: 60px !important;
 }
 
 #nextButton:disabled{
@@ -381,8 +385,8 @@ button {
 }
 
 #titleButton{
-    width: 550px;
-    height: 160px;
+    width: 230px;
+    height: 130px;
 
     background: url("images/btn-title.png") center center / contain no-repeat;
 
@@ -396,8 +400,8 @@ button {
 }
 
 #saveButton{
-    width: 550px;
-    height: 160px;
+    width: 230px;
+    height: 130px;
 
     background: url("images/btn-save.png") center center / contain no-repeat;
 
