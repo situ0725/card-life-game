@@ -61,6 +61,8 @@ let pendingChangeJob = false;
 let currentCompanyId = "";
 let pendingCompanyId = "";
 
+let previousStatusValues = null;
+
 let lifeReserveWarningShown = false;
 
 const maxJobHuntingTurn = 3;
@@ -2053,7 +2055,93 @@ function nextTurn() {
     checkPromotion();
 }
 
+function showStatusChange(elementId, difference, suffix = "") {
+
+    if (difference === 0) {
+        return;
+    }
+
+    const valueElement =
+        document.getElementById(elementId);
+
+    if (!valueElement) {
+        return;
+    }
+
+    const statusItem = valueElement.parentElement;
+
+    if (!statusItem) {
+        return;
+    }
+
+    statusItem.classList.add("status-change-area");
+
+    const changeElement =
+        document.createElement("span");
+
+    changeElement.className =
+        difference > 0
+            ? "status-change increase"
+            : "status-change decrease";
+
+    const sign = difference > 0 ? "+" : "";
+
+    changeElement.textContent =
+        `${sign}${difference.toLocaleString()}${suffix}`;
+
+    statusItem.appendChild(changeElement);
+
+    changeElement.addEventListener(
+        "animationend",
+        () => {
+            changeElement.remove();
+        }
+    );
+}
+
 function updateStatus() {
+
+    const currentStatusValues = {
+        health: health,
+        mental: mental,
+        money: money,
+        luck: luck,
+        study: study
+    };
+
+    if (previousStatusValues !== null) {
+
+        showStatusChange(
+            "health",
+            health - previousStatusValues.health
+        );
+
+        showStatusChange(
+            "mental",
+            mental - previousStatusValues.mental
+        );
+
+        showStatusChange(
+            "money",
+            money - previousStatusValues.money,
+            "円"
+        );
+
+        showStatusChange(
+            "luck",
+            luck - previousStatusValues.luck
+        );
+
+        showStatusChange(
+            "study",
+            study - previousStatusValues.study
+        );
+    }
+
+    previousStatusValues = {
+        ...currentStatusValues
+    };
+
 
     // 年齢・日付
     document.getElementById("age").textContent = age;
@@ -2866,7 +2954,11 @@ function stopAllBgm() {
     document.getElementById("gameBgm").pause();
 }
 
+
+
 function resetGameData() {
+
+    previousStatusValues = null;
 
     age = 15;
     year = 2026;
