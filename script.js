@@ -17,6 +17,9 @@ let nextCardCount = 3;
 
 let selectedCount = 0;
 
+const MAX_LIFE_RESERVE = 12;
+let lifeReserve = MAX_LIFE_RESERVE;
+
 let droppedOut = false;
 
 let universityRank = ""; // elite / normal / low
@@ -1976,6 +1979,11 @@ function nextTurn() {
     selected = false;
     document.getElementById("nextButton").disabled = true;
 
+    lifeReserve--;
+
+    clampLifeReserve();
+    updateLifeReserveDisplay();
+
     // 交際中で、まだ結婚していない場合
     if (hasPartner && !isMarried) {
         relationshipMonths++;
@@ -2100,6 +2108,175 @@ function updateStatus() {
     luck = Math.max(0, Math.min(100, luck));
     study = Math.max(0, Math.min(100, study));
 
+}
+
+function updateLifeReserveDisplay() {
+
+    const countText =
+        document.getElementById("lifeReserveCount");
+
+    const costText =
+        document.getElementById("replenishCostText");
+
+    if (!countText || !costText) {
+        return;
+    }
+
+    clampLifeReserve();
+
+    if (lifeReserve <= 0) {
+        countText.textContent = "緊急補充";
+    } else if (lifeReserve <= 3) {
+        countText.textContent =
+            `残り ${lifeReserve}！`;
+    } else {
+        countText.textContent =
+            `残り ${lifeReserve}`;
+    }
+
+    const replenishInfo =
+        getReplenishInfo();
+
+    if (replenishInfo.recoverAmount <= 0) {
+        costText.textContent =
+            "満タン・補充不要";
+
+        return;
+    }
+
+    costText.textContent =
+        `${replenishInfo.recoverAmount}回復：` +
+        `${replenishInfo.cost.toLocaleString()}円`;
+}
+
+function replenishLifeReserve() {
+
+    const replenishInfo =
+        getReplenishInfo();
+
+    // すでに満タン
+    if (replenishInfo.recoverAmount <= 0) {
+        document
+            .getElementById("message")
+            .textContent =
+            "残量はすでに満タンです。";
+
+        return;
+    }
+
+    // お金が足りない
+    if (money < replenishInfo.cost) {
+
+        if (typeof showMoneyModal === "function") {
+            showMoneyModal(
+                "補充するためのお金が足りません。"
+            );
+        } else {
+            document
+                .getElementById("message")
+                .textContent =
+                "補充するためのお金が足りません。";
+        }
+
+        return;
+    }
+
+    money -= replenishInfo.cost;
+
+    lifeReserve =
+        MAX_LIFE_RESERVE;
+
+    document
+        .getElementById("message")
+        .textContent =
+        `${replenishInfo.cost.toLocaleString()}円を支払い、` +
+        `残量を12まで補充しました。`;
+
+    updateStatus();
+    updateLifeReserveDisplay();
+}
+
+function getReplenishSetPrice() {
+
+    // 社会人
+    if (isWorking) {
+        switch (position) {
+            case "役員":
+            case "社長":
+                return 70000;
+
+            case "部長":
+                return 50000;
+
+            case "課長":
+                return 40000;
+
+            case "係長":
+                return 30000;
+
+            case "主任":
+                return 25000;
+
+            case "一般社員":
+            default:
+                return 20000;
+        }
+    }
+
+    // 学生でアルバイト中
+    if (isPartTimeWorking) {
+        return 5000;
+    }
+
+    // 高校生
+    if (age <= 17) {
+        return 1000;
+    }
+
+    // 大学生
+    if (age >= 18 && age <= 22) {
+        return 3000;
+    }
+
+    // 無職など
+    return 5000;
+}
+
+function getReplenishInfo() {
+
+    const recoverAmount =
+        MAX_LIFE_RESERVE - lifeReserve;
+
+    if (recoverAmount <= 0) {
+        return {
+            recoverAmount: 0,
+            setCount: 0,
+            cost: 0
+        };
+    }
+
+    // 3回復単位で切り上げ
+    const setCount =
+        Math.ceil(recoverAmount / 3);
+
+    const setPrice =
+        getReplenishSetPrice();
+
+    const cost =
+        setCount * setPrice;
+
+    return {
+        recoverAmount,
+        setCount,
+        cost
+    };
+}
+
+function clampLifeReserve() {
+    lifeReserve = Math.max(
+        0,
+        Math.min(MAX_LIFE_RESERVE, lifeReserve)
+    );
 }
 
 function isGameOver() {
@@ -2234,6 +2411,7 @@ function startNewGame() {
     playGameBgm();
 
     updateStatus();
+    updateLifeReserveDisplay();
     drawCards();
 }
 
