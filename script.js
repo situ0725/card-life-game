@@ -4,7 +4,7 @@ let month = 4;
 
 let health = 50;
 let mental = 50;
-let money = 5000;
+let money = 10000;
 let luck = 50;
 let study = 50;
 
@@ -60,6 +60,8 @@ let pendingChangeJob = false;
 
 let currentCompanyId = "";
 let pendingCompanyId = "";
+
+let lifeReserveWarningShown = false;
 
 const maxJobHuntingTurn = 3;
 
@@ -1984,6 +1986,15 @@ function nextTurn() {
     clampLifeReserve();
     updateLifeReserveDisplay();
 
+    // 残り2で警告
+    checkLifeReserveWarning();
+
+    // 残り0でゲームオーバー
+    if (lifeReserve <= 0) {
+        lifeReserveGameOver();
+        return;
+    }
+
     // 交際中で、まだ結婚していない場合
     if (hasPartner && !isMarried) {
         relationshipMonths++;
@@ -2194,6 +2205,10 @@ function replenishLifeReserve() {
 
     updateStatus();
     updateLifeReserveDisplay();
+
+    if (lifeReserve > 0 && selected) {
+        document.getElementById("nextButton").disabled = false;
+    }
 }
 
 function getReplenishSetPrice() {
@@ -2223,19 +2238,14 @@ function getReplenishSetPrice() {
         }
     }
 
-    // 学生でアルバイト中
-    if (isPartTimeWorking) {
-        return 5000;
-    }
-
     // 高校生
     if (age <= 17) {
-        return 1000;
+        return isPartTimeWorking ? 750 : 500;
     }
 
     // 大学生
     if (age >= 18 && age <= 22) {
-        return 3000;
+        return isPartTimeWorking ? 1500 : 1000;
     }
 
     // 無職など
@@ -2285,6 +2295,57 @@ function isGameOver() {
 
 function showGameOverModal() {
     document.getElementById("gameOverModal").classList.remove("hidden");
+}
+
+function lifeReserveGameOver() {
+    document
+        .getElementById("gameOverModal")
+        .classList.remove("hidden");
+
+    const gameOverText =
+        document.getElementById("gameOverText");
+
+    if (gameOverText) {
+        gameOverText.textContent =
+            "余力が尽き、補充するお金もなかったため、生活を続けられませんでした。";
+    }
+
+    document.getElementById("nextButton").disabled = true;
+    document.getElementById("replenishButton").disabled = true;
+}
+
+function checkLifeReserveGameOver() {
+    if (lifeReserve > 0) {
+        return false;
+    }
+
+    const replenishInfo = getReplenishInfo();
+
+    // 補充費用が足りなければゲームオーバー
+    if (money < replenishInfo.cost) {
+        lifeReserveGameOver();
+        return true;
+    }
+
+    // 補充できる場合は、次のターンへ進めない
+    document.getElementById("nextButton").disabled = true;
+
+    document.getElementById("message").textContent =
+        "余力が尽きました。補充しなければ次へ進めません。";
+
+    updateLifeReserveDisplay();
+
+    return false;
+}
+
+function checkLifeReserveWarning() {
+    if (lifeReserve === 2 && !lifeReserveWarningShown) {
+        lifeReserveWarningShown = true;
+
+        showMoneyModal(
+            "警告：余力が残り2になりました。0になる前に補充してください。"
+        );
+    }
 }
 
 function showDropoutModal() {
@@ -2813,7 +2874,7 @@ function resetGameData() {
 
     health = 50;
     mental = 50;
-    money = 5000;
+    money = 10000;
     luck = 50;
     study = 50;
 
